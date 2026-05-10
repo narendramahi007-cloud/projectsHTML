@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narendra Mahi | Cloud Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root { --accent: #7cfc00; --pink: #ff69b4; --dark: #1b5e20; }
+        * { box-sizing: border-box; transition: 0.3s; }
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; height: 100%; background: var(--pink); }
+
+        /* Floating Icons (Laptop Only) */
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .icon { position: absolute; font-size: 40px; animation: floatUp 10s infinite linear; opacity: 0.6; color: white; }
+        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); } 100% { transform: translateY(-10vh) rotate(360deg); } }
+
+        /* Main Layout */
+        .master-container {
+            position: relative; z-index: 10; width: 100%; min-height: 100vh;
+            background: rgba(240, 255, 240, 0.95); border-left: 15px solid var(--accent); border-right: 15px solid var(--accent);
+            display: flex; flex-direction: column; align-items: center; padding: 40px 20px;
+        }
+
+        /* Stylish Header */
+        .header-section { text-align: center; margin-bottom: 50px; }
+        .name-title { 
+            font-family: 'Orbitron', sans-serif; font-size: 85px; color: var(--dark); 
+            text-transform: uppercase; letter-spacing: 5px; margin: 0;
+            text-shadow: 3px 3px 0px var(--accent), 6px 6px 15px rgba(0,0,0,0.2);
+        }
+        .sub-title { 
+            font-size: 26px; color: #444; background: white; padding: 10px 40px; 
+            border-radius: 50px; border: 3px solid var(--accent); display: inline-block;
+            margin-top: 15px; font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 5-Left 5-Right Layout */
+        .layout-wrapper { display: flex; width: 95%; max-width: 1300px; justify-content: space-between; align-items: flex-start; gap: 30px; }
+        .side-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 300px; }
+
+        .action-btn { 
+            text-decoration: none; padding: 22px 15px; border-radius: 12px; font-weight: 700; 
+            font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; 
+            color: white; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+        }
+        .action-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* Button Colors */
+        .c1 { background: #4a148c; } .c2 { background: #d84315; } .c3 { background: #2e7d32; } .c4 { background: #01579b; } 
+        .c5 { background: #0077b5; } .c6 { background: #37474f; } .c7 { background: #111; } .c8 { background: #1877f2; } 
+        .c9 { background: #c2185b; } .c10 { background: #000; }
+
+        /* Music & Player Section (Bottom) */
+        .music-footer { width: 95%; max-width: 1000px; margin-top: 60px; text-align: center; }
+        .player-container { 
+            background: #222; padding: 30px; border-radius: 20px; border: 4px solid #ff4500;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4); color: white;
+        }
+        .song-list { 
+            height: 150px; overflow-y: auto; background: #333; margin-top: 15px; 
+            border-radius: 10px; text-align: left; padding: 10px;
+        }
+        .song-item { padding: 8px; border-bottom: 1px solid #444; cursor: pointer; font-size: 14px; }
+        .song-item:hover { background: #ff4500; }
+
+        /* Mobile View Fix */
+        @media (max-width: 900px) {
+            .master-container { border: none; width: 100vw; padding-top: 20px; }
+            .bg-animation { display: none; }
+            .layout-wrapper { flex-direction: column; align-items: center; }
+            .side-grid { width: 100%; }
+            .name-title { font-size: 40px; letter-spacing: 2px; }
+            .sub-title { font-size: 16px; padding: 8px 20px; }
+        }
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; padding: 20px; }
+        .modal-content { background: #fff; margin: auto; padding: 40px; width: 95%; max-width: 1200px; border-radius: 30px; }
+        .close-btn { position: sticky; top: 0; float: right; font-size: 50px; color: #f00; cursor: pointer; }
+        .skill-box { margin-bottom: 30px; padding: 25px; border-radius: 15px; background: #f4f4f4; border-left: 10px solid #4a148c; }
+        .skill-box h3 { margin: 0 0 10px 0; color: #4a148c; font-size: 22px; }
+        .skill-box p { font-size: 15px; line-height: 1.8; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animation">
+        <i class="fa-brands fa-docker icon" style="left:5%; animation-delay:0s;"></i>
+        <i class="fa-solid fa-cloud icon" style="left:15%; animation-delay:2s;"></i>
+        <i class="fa-brands fa-microsoft icon" style="right:10%; animation-delay:4s;"></i>
+        <i class="fa-solid fa-terminal icon" style="right:20%; animation-delay:6s;"></i>
+    </div>
+
+    <div class="master-container">
+        <div class="header-section">
+            <h1 class="name-title">Narendra Mahi</h1>
+            <div class="sub-title">Senior Azure DevOps & Cloud Automation Engineer</div>
+        </div>
+
+        <div class="layout-wrapper">
+            <div class="side-grid">
+                <button onclick="openM('skillM')" class="action-btn c1"><i class="fa-solid fa-bolt"></i> Technical Skills</button>
+                <a href="https://docs.google.com/document/d/1y_S0yvJLbMg9gJI0E1ywihi-xnvUm5f4/preview" target="_blank" class="action-btn c2"><i class="fa-solid fa-file-pdf"></i> Professional CV</a>
+                <a href="https://docs.google.com/document/d/1WEdPSMDFmQRuQrCGI0HxmtnDRa-UGv5E/preview" target="_blank" class="action-btn c3"><i class="fa-solid fa-book-open"></i> Learning Data</a>
+                <a href="https://docs.google.com/spreadsheets/d/19q3dKUqFktYcuLGcYiYfwmyT0oq8XfeH/edit" target="_blank" class="action-btn c4"><i class="fa-solid fa-table"></i> Project Excel</a>
+                <a href="https://www.linkedin.com/in/narendra-mahi" target="_blank" class="action-btn c5"><i class="fa-brands fa-linkedin-in"></i> LinkedIn Profile</a>
+            </div>
+
+            <div style="flex:1; display:flex; justify-content:center;">
+                <img src="my-photos.jpg" style="width:320px; height:320px; border-radius:50%; border:10px solid var(--accent); box-shadow: 0 0 30px rgba(0,0,0,0.2); object-fit:cover;">
+            </div>
+
+            <div class="side-grid">
+                <a href="https://docs.google.com/document/d/15THFidXWhsN-yXp2LNOyU8imvCv8RHLY/preview" target="_blank" class="action-btn c6"><i class="fa-solid fa-file-word"></i> Word Document</a>
+                <a href="https://github.com/narendramahi007-cloud" target="_blank" class="action-btn c7"><i class="fa-brands fa-github"></i> GitHub Repos</a>
+                <a href="https://www.facebook.com/profile.php?id=100008720538562" target="_blank" class="action-btn c8"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+                <button onclick="openM('galM')" class="action-btn c9"><i class="fa-solid fa-images"></i> 50+ Photo Gallery</button>
+                <a href="mailto:Narendramahi007@gmail.com" class="action-btn c10"><i class="fa-solid fa-paper-plane"></i> Contact Me</a>
+            </div>
+        </div>
+
+        <div class="music-footer">
+            <div class="player-container">
+                <h2 style="margin-top:0; font-family:'Orbitron'; color:#ff4500;"><i class="fa-solid fa-headphones"></i> Narendra's Music Station</h2>
+                <audio id="mainAudio" controls style="width:100%; border-radius:50px;">
+                    <source src="" type="audio/mpeg">
+                </audio>
+                <div class="song-list">
+                    <div class="song-item" onclick="playS('LINK_1')">🎵 Song 1 - Play Now</div>
+                    <div class="song-item" onclick="playS('LINK_2')">🎵 Song 2 - Play Now</div>
+                    <div class="song-item" onclick="playS('LINK_3')">🎵 Song 3 - Play Now</div>
+                    <p style="font-size:12px; color:#888;">(Tip: Replace LINK_X with direct MP3 links from Drive to play here)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="skillM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('skillM')">&times;</span>
+        <h1 style="text-align:center; color:#4a148c;">Technical Depth & Expertise</h1>
+        
+        <div class="skill-box">
+            <h3>1. Linux System Engineering</h3>
+            <p>Advanced expertise in Linux kernel optimization and server-side administration (Ubuntu, Debian, CentOS). Mastery in writing high-efficiency Bash scripts to automate routine system maintenance, security auditing, and performance monitoring. Hands-on experience in managing enterprise-level permissions via Sudoers and SSH key management for secure access. Implementing LVM (Logical Volume Management) for dynamic storage scaling. Configuring and hardening firewalls using UFW and IPTables to protect cloud workloads. Expertise in system logging (Syslog/Journald) and real-time troubleshooting of boot failures and network connectivity. Managing package repositories and automated patching cycles across thousands of nodes.</p>
+        </div>
+
+        <div class="skill-box" style="border-left-color:#d84315;">
+            <h3>2. Terraform & Infrastructure as Code</h3>
+            <p>Architecting production-ready cloud environments using Terraform HCL scripts with a focus on reusability and scalability. Advanced implementation of Terraform State Management using remote backends (Azure Blob Storage) with state locking to prevent deployment conflicts. Building complex nested Modules to standardize the deployment of Virtual Networks, Subnets, and Security Groups. Proficient in lifecycle management, resource tagging, and drift detection to maintain environment consistency. Integrating Terraform Cloud and GitHub Actions for automated plan-apply workflows. Managing multi-region infrastructure and disaster recovery setups via code. Expert in variable management and output handling for interconnected resource blocks across different projects.</p>
+        </div>
+
+        <div class="skill-box" style="border-left-color:#2e7d32;">
+            <h3>3. Microsoft Azure Cloud Architecture</h3>
+            <p>Designing end-to-end cloud solutions incorporating Azure App Services, Virtual Machine Scale Sets (VMSS), and serverless Functions. Expertise in Azure Networking, including VNet Peering, Application Gateway (WAF), and Traffic Manager for high availability. Implementing secure identity management using Azure Active Directory and Role-Based Access Control (RBAC). Managing sensitive data using Azure Key Vault for seamless secret rotation in DevOps pipelines. Designing highly available storage strategies using Blob, File, and Disk storage with geo-replication. Configuring Azure SQL and Cosmos DB for scalable backend services. Implementing cloud cost optimization strategies by monitoring resource utilization and utilizing reserved instances.</p>
+        </div>
+
+        <div class="skill-box" style="border-left-color:#01579b;">
+            <h3>4. CI/CD Pipeline Orchestration</h3>
+            <p>Developing robust, YAML-based Build and Release pipelines within Azure DevOps and GitHub Actions. Automating the entire software delivery lifecycle from code commit to production deployment with zero-downtime strategies. Integrating automated unit testing, code quality checks (SonarQube), and security vulnerability scanning (Trivy) directly into the pipeline. Managing complex multi-stage deployments with manual approval gates and post-deployment validation. Expertise in containerized build agents and self-hosted runners for specialized workloads. Implementing Blue-Green and Canary deployment patterns to minimize risk during production releases. Handling artifact management via Azure Artifacts and Docker Registries for versioned deployments.</p>
+        </div>
+    </div></div>
+
+    <div id="galM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('galM')">&times;</span>
+        <h1 style="text-align:center; color:var(--pink);">Narendra's Professional Journey (50+ Photos)</h1>
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">
+            <script>
+                for(let i=1; i<=50; i++) {
+                    document.write(`<div style="border:5px solid var(--pink); border-radius:15px; overflow:hidden; height:320px;"><img src="photo${i}.jpg" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300?text=Work+Photo+${i}'"></div>`);
+                }
+            </script>
+        </div>
+    </div></div>
+
+    <script>
+        function openM(id) { document.getElementById(id).style.display = "block"; }
+        function closeM(id) { document.getElementById(id).style.display = "none"; }
+        function playS(link) { 
+            let a = document.getElementById('mainAudio');
+            a.src = link;
+            a.play();
+        }
+        window.onclick = function(e) { if(e.target.className === "modal") e.target.style.display = "none"; }
+    </script>
+</body>
+</html>
