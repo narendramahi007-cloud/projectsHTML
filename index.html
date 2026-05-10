@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narendra Mahi | Azure DevOps Master</title>
+    <link rel="icon" href="my-photos.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; height: 100%; overflow-x: hidden; }
+        
+        /* 1. PC/LAPTOP SETTINGS (With Pink Border & Icons) */
+        body { 
+            background: #ff69b4; 
+            display: flex; justify-content: center; 
+            padding: 0 80px; 
+        }
+
+        /* 2. FLOATING ICONS (Laptop Only) */
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .icon { position: absolute; font-size: 45px; animation: floatUp 12s infinite linear; opacity: 0.9; }
+        .ic1 { left: 15px; color: #2496ed; animation-delay: 0s; } 
+        .ic2 { right: 15px; color: #0089d6; animation-delay: 3s; }
+        .ic3 { left: 20px; color: #844fba; animation-delay: 6s; } 
+        .ic4 { right: 20px; color: #f05032; animation-delay: 9s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* 3. MAIN CONTAINER & WATERMARK */
+        .container { 
+            position: relative; z-index: 10; width: 100%; min-height: 100vh;
+            background: rgba(240, 255, 240, 0.93); 
+            border-left: 10px solid #7cfc00; border-right: 10px solid #7cfc00;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 50px 20px;
+        }
+
+        .watermark {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('my-photos.jpg') no-repeat center center/cover;
+            opacity: 0.22; z-index: -1; pointer-events: none;
+        }
+
+        .name-title { font-size: 70px; color: #1b5e20; font-weight: 900; margin: 0; text-align: center; }
+        .sub-title { font-size: 24px; color: #333; background: white; padding: 8px 25px; border-radius: 50px; border: 2px solid #7cfc00; margin-bottom: 40px; text-align: center; }
+
+        /* 4. BUTTONS GRID */
+        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 95%; max-width: 1100px; }
+        .action-btn { 
+            text-decoration: none; padding: 20px 10px; border-radius: 15px; font-weight: 700; 
+            font-size: 14px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; 
+            color: white; border: none; cursor: pointer; box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
+        
+        .b1 { background: #4a148c; } .b2 { background: #d84315; } .b3 { background: #2e7d32; } .b4 { background: #01579b; } 
+        .b5 { background: #0077b5; } .b6 { background: #37474f; } .b7 { background: #111; } .b8 { background: #1877f2; } 
+        .b9 { background: #c2185b; } .b10 { background: #000; } .b11 { background: #ff4500; }
+        
+        .action-btn:hover { transform: translateY(-5px); filter: brightness(1.1); }
+
+        /* 5. MOBILE VIEW FIX (No Border/Icons) */
+        @media (max-width: 768px) {
+            body { padding: 0; background: white; }
+            .bg-animation { display: none; }
+            .container { border: none; width: 100vw; }
+            .name-title { font-size: 40px; }
+            .sub-title { font-size: 16px; margin-bottom: 30px; }
+        }
+
+        /* MODAL & SKILLS STYLE */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; padding: 20px; }
+        .modal-content { background: #fff; margin: auto; padding: 40px; width: 95%; max-width: 1200px; border-radius: 30px; }
+        .close-btn { position: sticky; top: 0; float: right; font-size: 50px; color: #f00; cursor: pointer; z-index: 1001; }
+        
+        .skill-section { margin-bottom: 25px; padding: 20px; border-radius: 15px; background: #f9f9f9; border-left: 8px solid #4a148c; text-align: left; }
+        .skill-section h3 { margin-top: 0; color: #4a148c; text-transform: uppercase; }
+        .skill-section p { font-size: 15px; line-height: 1.6; color: #444; }
+
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .photo-item { border-radius: 10px; overflow: hidden; border: 4px solid #ff69b4; height: 300px; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animation">
+        <i class="fa-brands fa-docker icon ic1"></i>
+        <i class="fa-brands fa-microsoft icon ic2"></i>
+        <i class="fa-solid fa-cloud icon ic3"></i>
+        <i class="fa-brands fa-github icon ic4"></i>
+    </div>
+
+    <div class="container">
+        <div class="watermark"></div>
+        <h1 class="name-title">Narendra Mahi</h1>
+        <p class="sub-title">Infrastructure Deployment Master | Azure DevOps Professional</p>
+        
+        <div class="btn-grid">
+            <button onclick="openM('skillM')" class="action-btn b1"><i class="fa-solid fa-bolt"></i> 1. Skills</button>
+            <a href="https://docs.google.com/document/d/1y_S0yvJLbMg9gJI0E1ywihi-xnvUm5f4/preview" target="_blank" class="action-btn b2"><i class="fa-solid fa-file-invoice"></i> 2. Professional CV</a>
+            <a href="https://docs.google.com/document/d/1WEdPSMDFmQRuQrCGI0HxmtnDRa-UGv5E/preview" target="_blank" class="action-btn b3"><i class="fa-solid fa-book"></i> 3. Learning Data</a>
+            <a href="https://docs.google.com/spreadsheets/d/19q3dKUqFktYcuLGcYiYfwmyT0oq8XfeH/edit?usp=sharing" target="_blank" class="action-btn b4"><i class="fa-solid fa-table"></i> 4. Excel Sheet</a>
+            <a href="https://www.linkedin.com/in/narendra-mahi" target="_blank" class="action-btn b5"><i class="fa-brands fa-linkedin"></i> 5. LinkedIn</a>
+            <a href="https://docs.google.com/document/d/15THFidXWhsN-yXp2LNOyU8imvCv8RHLY/preview" target="_blank" class="action-btn b6"><i class="fa-solid fa-file-word"></i> 6. Word File</a>
+            <a href="https://github.com/narendramahi007-cloud" target="_blank" class="action-btn b7"><i class="fa-brands fa-github"></i> 7. GitHub</a>
+            <a href="https://www.facebook.com/profile.php?id=100008720538562" target="_blank" class="action-btn b8"><i class="fa-brands fa-facebook"></i> 8. Facebook</a>
+            <button onclick="openM('galM')" class="action-btn b9"><i class="fa-solid fa-image"></i> 9. 50+ Gallery</button>
+            <a href="mailto:Narendramahi007@gmail.com" class="action-btn b10"><i class="fa-solid fa-envelope"></i> 10. Contact Me</a>
+            
+            <a href="https://drive.google.com/drive/folders/1m_k-r7KaEF3p7UmbsCqQDoBA6N-kemEe?usp=sharing" target="_blank" class="action-btn b11"><i class="fa-solid fa-music"></i> 11. My Music List</a>
+        </div>
+    </div>
+
+    <div id="skillM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('skillM')">&times;</span>
+        <h1 style="color:#4a148c; text-align:center;">Professional Skill-Set</h1>
+        
+        <div class="skill-section">
+            <h3>1. Linux Administration</h3>
+            <p>Mastery in Ubuntu/Debian server management with root-level troubleshooting. Expertise in shell scripting (Bash) to automate daily system health checks. Proficient in managing user permissions, SSH keys, and system firewalls. Experience in optimizing kernel parameters and disk management. Handling high-traffic web servers using Nginx and Apache reverse proxies. Automated package management and system patching across distributed Linux environments.</p>
+        </div>
+
+        <div class="skill-section" style="border-left-color: #844fba;">
+            <h3>2. Terraform (Infrastructure as Code)</h3>
+            <p>End-to-end infrastructure provisioning on Azure using Terraform HCL scripts. Advanced state management using remote backends and state locking to ensure consistency. Building custom Terraform Modules for Virtual Networks, App Services, and SQL Databases. Proficient in Terraform plan, apply, and destroy workflows integrated with CI/CD. Managing multi-environment setups (Dev, Test, Prod) using workspaces. Expertise in drift detection and resource lifecycle management.</p>
+        </div>
+
+        <div class="skill-section" style="border-left-color: #0089d6;">
+            <h3>3. Microsoft Azure Cloud</h3>
+            <p>Designing scalable cloud architectures with Azure Virtual Machines and App Services. Expert-level configuration of VNets, Peering, Subnets, and Network Security Groups (NSG). Managing enterprise secrets and certificates securely using Azure Key Vault. Implementing Azure Active Directory (RBAC) and policy-driven cloud governance. Managing scalable storage solutions via Azure Blob and File Storage. Deploying Load Balancers and Application Gateways for global traffic management.</p>
+        </div>
+
+        <div class="skill-section" style="border-left-color: #2e7d32;">
+            <h3>4. CI/CD & Automation</h3>
+            <p>Architecting robust Build and Release pipelines using Azure DevOps and GitHub Actions. Writing complex YAML-based pipeline logic for automated software delivery. Integrating security scanning (SAST/DAST) into the deployment lifecycle. Managing automated testing stages and multi-environment deployment gates. Expert in Git branching strategies and automated pull request workflows. Implementing continuous deployment with zero-downtime using blue-green strategies.</p>
+        </div>
+
+        <div class="skill-section" style="border-left-color: #2496ed;">
+            <h3>5. Docker & Containerization</h3>
+            <p>Containerizing legacy and modern applications using optimized Dockerfiles. Managing microservices orchestration using Docker Compose and Kubernetes clusters. Expertise in managing container images, tagging, and pushing to Azure Container Registry (ACR). Deep knowledge of container networking, shared volumes, and resource constraints. Implementing security best practices for container runtime and image scanning. Troubleshooting containerized logs and networking issues.</p>
+        </div>
+
+        <div class="skill-section" style="border-left-color: #1b5e20;">
+            <h3>6. Networking & Monitoring</h3>
+            <p>Designing high-availability networks with Azure Traffic Manager and DNS. Real-time system monitoring using Azure Monitor and Log Analytics workspaces. Setting up advanced KQL queries for log analysis and performance auditing. Configuring proactive alerts for resource spikes and application failures. Deep understanding of L1/L2 network troubleshooting and telecom RF protocols. Implementing Application Insights for deep-level application performance tracking.</p>
+        </div>
+    </div></div>
+
+    <div id="galM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('galM')">&times;</span>
+        <h1 style="color:#c2185b; text-align:center;">Project Gallery (50+ Photos)</h1>
+        <div class="photo-grid">
+            <script>
+                for(let i=1; i<=50; i++) {
+                    document.write(`<div class="photo-item"><img src="photo${i}.jpg" onerror="this.src='https://via.placeholder.com/300x350?text=Photo+${i}'"></div>`);
+                }
+            </script>
+        </div>
+    </div></div>
+
+    <script>
+        function openM(id) { document.getElementById(id).style.display = "block"; }
+        function closeM(id) { document.getElementById(id).style.display = "none"; }
+        window.onclick = function(e) { if(e.target.className === "modal") e.target.style.display = "none"; }
+    </script>
+</body>
+</html>
