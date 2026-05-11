@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narendra Mahi | Azure DevOps Professional</title>
+    <link rel="icon" href="my-photos.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root { --accent: #7cfc00; --pink: #ff69b4; --dark: #1b5e20; }
+        * { box-sizing: border-box; transition: 0.3s; }
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; height: 100%; overflow: hidden; }
+
+        /* Full Page Watermark Background */
+        .master-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(240, 255, 240, 0.94); z-index: -2; }
+        .watermark { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('my-photos.jpg') no-repeat center center/cover; opacity: 0.20; z-index: -1; pointer-events: none; }
+
+        /* 6 DevOps Floating Icons */
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .icon { position: absolute; font-size: 50px; animation: floatUp 15s infinite linear; opacity: 1; }
+        .ic-docker { left: 15%; color: #2496ed; animation-delay: 0s; }
+        .ic-k8s { left: 35%; color: #326ce5; animation-delay: 3s; }
+        .ic-terraform { left: 55%; color: #844fba; animation-delay: 6s; }
+        .ic-cicd { right: 35%; color: #2e7d32; animation-delay: 9s; }
+        .ic-ms { right: 15%; color: #0089d6; animation-delay: 12s; }
+        .ic-linux { right: 5%; color: #f0ad4e; animation-delay: 15s; }
+        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+
+        /* Content Area */
+        .container { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .name-title { font-family: 'Orbitron', sans-serif; font-size: clamp(30px, 6vw, 70px); color: var(--dark); text-transform: uppercase; margin: 0; text-shadow: 3px 3px 0px var(--accent); text-align: center; }
+        .sub-title { font-size: 18px; color: #222; background: white; padding: 8px 25px; border-radius: 50px; border: 2px solid var(--accent); margin-top: 10px; font-weight: 700; text-align: center; }
+
+        /* Edge Buttons Placement (Approx 1 inch = 96px) */
+        .edge-btn { 
+            position: absolute; width: 220px; text-decoration: none; padding: 20px; border-radius: 15px; 
+            font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; 
+            gap: 10px; color: white; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); text-transform: uppercase;
+            z-index: 20;
+        }
+        .edge-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* Left Buttons */
+        .btn-left-1 { left: 80px; top: 35%; background: #4a148c; }
+        .btn-left-2 { left: 80px; top: 55%; background: #111; }
+
+        /* Right Buttons */
+        .btn-right-1 { right: 80px; top: 35%; background: #c2185b; }
+        .btn-right-2 { right: 80px; top: 55%; background: #01579b; }
+
+        /* Bottom Small Contact Button */
+        .btn-contact { bottom: 40px; background: #d84315; width: 180px; padding: 12px; font-size: 12px; }
+
+        /* Modals */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; padding: 20px; }
+        .modal-content { background: #fff; margin: auto; padding: 40px; width: 95%; max-width: 1100px; border-radius: 30px; position: relative; }
+        .close-btn { position: sticky; top: 0; float: right; font-size: 50px; color: #f00; cursor: pointer; z-index: 100; }
+        
+        .skill-header { background: #f9f9f9; border-left: 10px solid #4a148c; padding: 20px; margin-bottom: 20px; border-radius: 10px; text-align: left; }
+        .sub-btn { background: #333; color: white; padding: 12px; border-radius: 10px; font-size: 13px; text-decoration: none; text-align: center; font-weight: 600; }
+        iframe { width: 100%; height: 500px; border-radius: 15px; border: 3px solid var(--accent); }
+
+        @media (max-width: 1000px) {
+            .edge-btn { position: relative; left: 0; right: 0; top: 0; bottom: 0; margin: 10px auto; width: 90%; }
+            .container { justify-content: flex-start; padding-top: 50px; overflow-y: auto; }
+            body { overflow-y: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="master-bg"></div>
+    <div class="watermark"></div>
+
+    <div class="bg-animation">
+        <i class="fa-brands fa-docker icon ic-docker"></i>
+        <i class="fa-solid fa-dharmachakra icon ic-k8s"></i>
+        <i class="fa-solid fa-code icon ic-terraform"></i>
+        <i class="fa-solid fa-infinity icon ic-cicd"></i>
+        <i class="fa-brands fa-microsoft icon ic-ms"></i>
+        <i class="fa-brands fa-linux icon ic-linux"></i>
+    </div>
+
+    <div class="container">
+        <h1 class="name-title">Narendra Mahi</h1>
+        <div class="sub-title">Azure DevOps Master Engineer</div>
+
+        <button onclick="openM('skillM')" class="edge-btn btn-left-1"><i class="fa-solid fa-brain"></i> Technical Skills</button>
+        <a href="https://github.com/narendramahi007-cloud" target="_blank" class="edge-btn btn-left-2"><i class="fa-brands fa-github"></i> GitHub Actions</a>
+
+        <button onclick="openM('entM')" class="edge-btn btn-right-1"><i class="fa-solid fa-clapperboard"></i> Entertainment</button>
+        <button onclick="openM('socialM')" class="edge-btn btn-right-2"><i class="fa-solid fa-share-nodes"></i> Social Media</button>
+
+        <a href="mailto:Narendramahi007@gmail.com" class="edge-btn btn-contact"><i class="fa-solid fa-envelope"></i> Contact Me</a>
+    </div>
+
+    <div id="skillM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('skillM')">&times;</span>
+        <h2 style="text-align:center; color:#4a148c; font-family:'Orbitron';">Technical Hub</h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:30px;">
+            <a href="https://docs.google.com/document/d/1y_S0yvJLbMg9gJI0E1ywihi-xnvUm5f4/preview" target="_blank" class="sub-btn">Professional CV</a>
+            <a href="https://docs.google.com/document/d/1WEdPSMDFmQRuQrCGI0HxmtnDRa-UGv5E/preview" target="_blank" class="sub-btn">Learning Vault</a>
+            <a href="https://docs.google.com/spreadsheets/d/19q3dKUqFktYcuLGcYiYfwmyT0oq8XfeH/preview" target="_blank" class="sub-btn">Project Excel</a>
+            <a href="https://docs.google.com/document/d/15THFidXWhsN-yXp2LNOyU8imvCv8RHLY/preview" target="_blank" class="sub-btn">Project Word</a>
+        </div>
+        <div class="skill-header"><h3>1. Linux System Engineering</h3><p>Mastery in managing enterprise Linux distributions including Ubuntu, Debian, and CentOS. Proficient in root-level troubleshooting, file system management, and kernel optimization. Expert in writing advanced Bash scripts to automate routine tasks such as system health monitoring, log rotation, and automated patching cycles. Expert in managing user permissions, SSH-key configurations, and securing servers with UFW/IPTables firewalls. Skilled in implementing LVM for dynamic storage management and troubleshooting complex network connectivity issues.</p></div>
+        <div class="skill-header" style="border-left-color:#d84315;"><h3>2. Terraform (IaC)</h3><p>Architecting production-grade cloud environments on Microsoft Azure using Terraform HCL with a strong focus on modularity and reusability. Expert in managing Terraform state files using remote backends like Azure Blob Storage with robust state-locking mechanisms. Experienced in building nested modules to standardize Virtual Networks, Subnets, and Network Security Groups across multiple environments. Proficient in managing infrastructure drift and performing safe resource lifecycle management.</p></div>
+        <div class="skill-header" style="border-left-color:#2e7d32;"><h3>3. Microsoft Azure Architecture</h3><p>Expertise in designing and deploying scalable cloud solutions including Virtual Machines, App Services, and Azure Kubernetes Service (AKS). Comprehensive knowledge of Azure networking components like VNet Peering, Application Gateways with WAF, and Traffic Manager. Managing enterprise secrets using Azure Key Vault with automated rotation strategies. Proficient in implementing Role-Based Access Control (RBAC) and policy-driven cloud governance.</p></div>
+        <div class="skill-header" style="border-left-color:#01579b;"><h3>4. CI/CD & Pipeline Orchestration</h3><p>Building robust Build and Release pipelines using Azure DevOps (YAML) and GitHub Actions. Automating the entire lifecycle from code commit to production deployment. Integrating security scanning tools like SonarQube and Trivy. Managing multi-stage deployments with manual approval gates, environment checks, and post-deployment validation. Expert in managing artifact versioning and container registries for consistent builds.</p></div>
+        <div class="skill-header" style="border-left-color:#0077b5;"><h3>5. Docker & Containerization</h3><p>Mastery in containerizing diverse applications using optimized multi-stage Dockerfiles. Expert in managing complex microservices orchestration using Docker Compose for local development and AKS for production scaling. Proficient in container networking, shared persistent volumes, and resource constraint management. Implementing best practices for secure image management and pushing to private container registries.</p></div>
+        <div class="skill-header" style="border-left-color:#37474f;"><h3>6. Networking & Monitoring Solutions</h3><p>Designing high-availability network architectures with a focus on low latency and security. Expertise in configuring DNS, Load Balancers, and Application Gateways. Implementing deep-level observability using Azure Monitor, Log Analytics, and Application Insights. Writing complex KQL queries to analyze system logs and proactively detect failures. Setting up automated metric-based alerts to notify stakeholders.</p></div>
+    </div></div>
+
+    <div id="socialM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('socialM')">&times;</span>
+        <h2 style="text-align:center;">Connect with Me</h2>
+        <div style="display:flex; flex-direction:column; gap:15px;">
+            <a href="https://www.linkedin.com/in/narendra-mahi" target="_blank" class="edge-btn" style="position:static; width:100%; background:#0077b5;"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+            <a href="https://www.facebook.com/profile.php?id=100008720538562" target="_blank" class="edge-btn" style="position:static; width:100%; background:#1877f2;"><i class="fa-brands fa-facebook"></i> Facebook</a>
+        </div>
+    </div></div>
+
+    <div id="entM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('entM')">&times;</span>
+        <h2 style="text-align:center; color:#c2185b;">Entertainment Hub</h2>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+            <button onclick="showEnt('music-box')" class="edge-btn" style="position:static; width:100%; background:#ff4500;"><i class="fa-solid fa-music"></i> 50+ Music</button>
+            <button onclick="showEnt('photo-box')" class="edge-btn" style="position:static; width:100%; background:#ec4899;"><i class="fa-solid fa-images"></i> 50+ Photos</button>
+        </div>
+        <div id="music-box" style="display:none;"><iframe src="https://drive.google.com/embeddedfolderview?id=1m_k-r7KaEF3p7UmbsCqQDoBA6N-kemEe#list"></iframe></div>
+        <div id="photo-box" style="display:none;"><div id="pGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:10px;"></div></div>
+    </div></div>
+
+    <script>
+        function openM(id) { document.getElementById(id).style.display = "block"; }
+        function closeM(id) { document.getElementById(id).style.display = "none"; }
+        function showEnt(id) {
+            document.getElementById('music-box').style.display = "none";
+            document.getElementById('photo-box').style.display = "none";
+            document.getElementById(id).style.display = "block";
+            if(id === 'photo-box') {
+                const g = document.getElementById('pGrid'); g.innerHTML = "";
+                for(let i=1; i<=50; i++) g.innerHTML += `<div style="border:3px solid #ec4899; border-radius:10px; height:250px; overflow:hidden;"><img src="photo${i}.jpg" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/250?text=Photo+${i}'"></div>`;
+            }
+        }
+        window.onclick = function(e) { if(e.target.className === "modal") e.target.style.display = "none"; }
+    </script>
+</body>
+</html>
