@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Narendra Mahi Cloud and Infra Automation Architect</title>
+    <link rel="icon" href="my-photos.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root { --accent: #7cfc00; --pink: #ff69b4; --dark: #1b5e20; --primary-border: #b71c1c; }
+        * { box-sizing: border-box; transition: 0.3s; }
+        
+        /* 🔥 PULL-TO-REFRESH STRICT BLOCK & BODY STYLES 🔥 */
+        body, html { 
+            margin: 0; padding: 0; font-family: 'Poppins', sans-serif; height: 100%; 
+            overscroll-behavior: none; 
+            touch-action: pan-y;
+            background-color: #f4f7f6; /* Light greyish-blue background to make white cards pop */
+        }
+
+        .master-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e0f2f1 0%, #ffffff 100%); z-index: -2; }
+        
+        /* 🔥 WATERMARK (HAR JAGAH DIKHEGA, KEWAL REEL/PHOTO ME NAHI) 🔥 */
+        .watermark { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: url('my-photos.jpg') no-repeat center center/cover; 
+            opacity: 0.12; z-index: 1; pointer-events: none; 
+        }
+
+        /* BACKGROUND ANIMATIONS */
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+        .icon { position: absolute; font-size: 50px; animation: floatUp 18s infinite linear; opacity: 0.8; }
+        .ic-docker { left: 15%; color: #2496ed; animation-delay: 0s; }
+        .ic-k8s { left: 35%; color: #326ce5; animation-delay: 3s; }
+        .ic-terraform { left: 55%; color: #844fba; animation-delay: 6s; }
+        .ic-cicd { right: 35%; color: #2e7d32; animation-delay: 9s; }
+        .ic-ms { right: 15%; color: #0089d6; animation-delay: 12s; }
+        .ic-linux { right: 5%; color: #f0ad4e; animation-delay: 15s; }
+        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+
+        /* 🔥 TOP LEFT TO MIDDLE HEADER 🔥 */
+        .top-left-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 60%; /* Spans from left corner to a bit past middle */
+            max-width: 600px;
+            z-index: 50;
+            background: transparent;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .name-title { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: clamp(24px, 5vw, 45px); 
+            color: var(--primary-border); 
+            text-transform: uppercase; 
+            margin: 0; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1); 
+            line-height: 1.1;
+        }
+        
+        .sub-title { 
+            font-size: clamp(12px, 2.5vw, 18px); 
+            color: #333; 
+            margin-top: 8px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+
+        /* 🔥 MAIN GRID MENU (IMAGE WALE BUTTONS KI TARAH) 🔥 */
+        .main-menu-container {
+            position: relative;
+            z-index: 10;
+            padding: 160px 20px 40px 20px; /* Top padding to avoid header overlap */
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .card-btn {
+            background: #ffffff;
+            border: 1.5px solid var(--primary-border);
+            border-radius: 12px;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--primary-border);
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            aspect-ratio: 4/3; /* Keeps them proportionate like the image */
+        }
+
+        .card-btn:hover, .card-btn:active {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(183, 28, 28, 0.2);
+            background: #fffafa;
+        }
+
+        .card-btn i {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .card-btn span {
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+
+        /* 🔥 FULL SCREEN MODAL STYLES 🔥 */
+        .modal { 
+            display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; 
+            background: rgba(255,255,255,0.98); overflow-y: auto; padding: 0; 
+            -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
+        }
+        .modal-content { 
+            background: transparent; margin: 0 auto; padding: 20px; width: 100%; max-width: 1200px; 
+            border-radius: 0; position: relative; min-height: 100vh; padding-top: 70px;
+        }
+        
+        .close-btn { 
+            position: fixed; top: 15px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; 
+            z-index: 100; background: var(--primary-border); border-radius: 50%; width: 45px; height: 45px; 
+            display: flex; align-items: center; justify-content: center; line-height: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Modal specific header styling */
+        .modal-title {
+            text-align: center;
+            color: var(--primary-border);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--primary-border);
+            padding-bottom: 10px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* App Fullscreen Viewer */
+        .fullscreen-app-viewer {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: #fff; z-index: 100000; overflow: hidden; overscroll-behavior: contain;
+        }
+        .fullscreen-app-viewer iframe { width: 100%; height: 100%; border: none; margin: 0; padding: 0; }
+        .app-back-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #ff0000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100001; border: 2px solid #fff; }
+        .app-direct-link { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-size: 14px; z-index: 100001; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #fff; }
+
+        .audio-item { background: #fff; border: 1px solid var(--primary-border); margin: 10px 0; padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .audio-item span { flex-grow: 1; font-weight: 600; color: #333; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        audio { height: 35px; border-radius: 5px; width: 150px; }
+        
+        .photo-grid, .reel-grid, .gk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .photo-card, .reel-card { border: 1.5px solid var(--primary-border); border-radius: 10px; overflow: hidden; height: 200px; background: #000; cursor: pointer; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .photo-card img, .reel-card video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.9); font-size: 50px; pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+        /* 🔥 LIGHTBOX (WATERMARK HIDE YAHAN HOGA KYONKI BACKGROUND BLACK HAI) 🔥 */
+        .lightbox { display: none; position: fixed; z-index: 100000; left: 0; top: 0; width: 100vw; height: 100vh; background-color: #000; align-items: center; justify-content: center; overscroll-behavior: contain; }
+        .lightbox-content-wrapper { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .lightbox-content-wrapper img, .lightbox-content-wrapper video { width: 100%; height: 100%; max-width: 100vw; max-height: 100vh; object-fit: contain; border-radius: 0; border: none; box-shadow: none; outline: none; }
+        .lightbox-close-btn { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 35px; cursor: pointer; z-index: 100001; background: rgba(255,0,0,0.8); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff;}
+        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 25px; color: white; background: rgba(0,0,0,0.6); border: 2px solid #fff; cursor: pointer; padding: 15px 20px; border-radius: 50%; z-index: 100001; }
+        .lightbox-nav:hover { background: rgba(255,255,255,0.3); }
+        .lightbox-prev { left: 15px; }
+        .lightbox-next { right: 15px; }
+        .lightbox-counter { position: absolute; top: 20px; left: 20px; color: white; font-size: 16px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 8px 20px; border-radius: 20px; z-index: 100001; border: 1px solid #fff;}
+
+        /* YouTube & Shorts Grid (kept colorful but fits within cards if needed) */
+        .yt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
+        .yt-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 10px; border-radius: 15px; text-decoration: none; font-weight: 600; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s; border: 1px solid rgba(0,0,0,0.05); }
+        .yt-btn:active { transform: scale(0.95); }
+        .yt-btn img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px; border: 3px solid rgba(255, 255, 255, 0.8); background: white; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .yt-btn span { font-size: 13px; line-height: 1.2; color: #333; margin-top: 5px; }
+        
+        .yt-color-1 { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+        .yt-color-2 { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+        .yt-color-3 { background: linear-gradient(135deg, #84fab0, #8fd3f4); }
+        .yt-color-4 { background: linear-gradient(135deg, #fccb90, #d57eeb); }
+        .yt-color-5 { background: linear-gradient(135deg, #e0c3fc, #8ec5fc); }
+
+        /* Calculator Styles - Full screen dark theme inside modal */
+        #calcM .modal-content { background: #121212; display: flex; flex-direction: column; padding-top: 50px;}
+        .calc-wrapper { flex: 1; display: flex; flex-direction: column; max-width: 500px; width: 100%; margin: 0 auto; height: 100%; justify-content: center;}
+        .calc-display { background: #000; padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: right; font-family: monospace; border: 1px solid #333; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+        #calc-expr { font-size: 20px; color: #888; min-height: 30px; margin-bottom: 10px; }
+        #calc-res { font-size: 55px; color: #fff; overflow-x: auto; font-weight: bold; }
+        
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .calc-btn { background: #2c2c2c; color: white; border: none; padding: 20px; font-size: 26px; border-radius: 12px; cursor: pointer; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.1s;}
+        .calc-btn:active { transform: scale(0.92); }
+        .calc-btn.op { background: #ff9800; color: #fff; }
+        .calc-btn.adv { background: #01579b; font-size: 20px; }
+        .calc-btn.clear { background: #e53935; }
+        .calc-btn.eq { background: #43a047; }
+
+        /* Astrology Styles */
+        .astro-input { padding: 18px; border-radius: 10px; border: 2px solid var(--primary-border); font-size: 16px; width: 100%; margin-bottom: 20px; font-family: 'Poppins', sans-serif; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .astro-input:focus { border-color: #ff9800; outline: none; box-shadow: 0 0 8px rgba(255, 152, 0, 0.4); }
+        
+        .astro-result-box {
+            margin-top: 30px;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            border: 2px solid #ff9800;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+            line-height: 1.8;
+            font-size: 16px;
+            color: #222;
+        }
+
+        .astro-section-title {
+            color: #d84315;
+            font-size: 22px;
+            font-weight: 700;
+            border-bottom: 2px dashed #ffb74d;
+            padding-bottom: 10px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-desc {
+            background: #fff;
+            border: 1.5px solid var(--primary-border);
+            border-left: 8px solid var(--primary-border);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .skill-desc h3 { margin-top: 0; color: var(--primary-border); }
+
+    </style>
+</head>
+<body>
+
+    <div class="master-bg"></div>
+    <div class="watermark"></div>
+
+    <div class="bg-animation">
+        <i class="fa-brands fa-docker icon ic-docker"></i>
+        <i class="fa-solid fa-dharmachakra icon ic-k8s"></i>
+        <i class="fa-solid fa-code icon ic-terraform"></i>
+        <i class="fa-solid fa-infinity icon ic-cicd"></i>
+        <i class="fa-brands fa-microsoft icon ic-ms"></i>
+        <i class="fa-brands fa-linux icon ic-linux"></i>
+    </div>
+
+    <!-- 🔥 Header Top Left to Middle 🔥 -->
+    <div class="top-left-header">
+        <h1 class="name-title">Narendra Mahi</h1>
+        <div class="sub-title"><i class="fa-solid fa-cloud-bolt"></i> Cloud and Infra Automation Architect</div>
+    </div>
+
+    <!-- 🔥 Main Centered Grid with the 9 Requested Buttons 🔥 -->
+    <div class="main-menu-container">
+        <div class="card-grid">
+            <button onclick="openM('skillM')" class="card-btn">
+                <i class="fa-solid fa-laptop-code" style="color: #4a148c;"></i>
+                <span>1-Technical</span>
+            </button>
+            <button onclick="openM('gkM')" class="card-btn">
+                <i class="fa-solid fa-book-open" style="color: #0277bd;"></i>
+                <span>2- General Knowledge</span>
+            </button>
+            <button onclick="launchAppFile('networking.pdf', 'pdf')" class="card-btn">
+                <i class="fa-solid fa-network-wired" style="color: #2e7d32;"></i>
+                <span>3- Networking</span>
+            </button>
+            <button onclick="openM('calcM')" class="card-btn">
+                <i class="fa-solid fa-calculator" style="color: #ef6c00;"></i>
+                <span>4- Calculator</span>
+            </button>
+            <button onclick="openM('entM')" class="card-btn">
+                <i class="fa-solid fa-clapperboard" style="color: #c2185b;"></i>
+                <span>5- Entertainment</span>
+            </button>
+            <button onclick="openM('ytM')" class="card-btn">
+                <i class="fa-brands fa-youtube" style="color: #d50000;"></i>
+                <span>6- Youtube</span>
+            </button>
+            <button onclick="openM('astroM')" class="card-btn">
+                <i class="fa-solid fa-star-and-crescent" style="color: #ff8f00;"></i>
+                <span>7- Kundai - horoscope</span>
+            </button>
+            <button onclick="openM('socialM')" class="card-btn">
+                <i class="fa-solid fa-share-nodes" style="color: #00838f;"></i>
+                <span>8- Social site</span>
+            </button>
+            <a href="mailto:Narendramahi007@gmail.com" class="card-btn">
+                <i class="fa-solid fa-address-book" style="color: #4e342e;"></i>
+                <span>9- Contact me</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Lightboxes & App Viewers -->
+    <div id="appFullscreenViewer" class="fullscreen-app-viewer">
+        <a id="directLinkBtn" href="#" class="app-direct-link"><i class="fa-solid fa-external-link-alt"></i> Open Direct Link</a>
+        <div class="app-back-trigger" onclick="closeAppFile()"><i class="fa-solid fa-arrow-left"></i></div>
+        <div id="appViewerFrameWrapper" style="width:100%; height:100%;"></div>
+    </div>
+
+    <!-- Media Lightbox - Has solid black background to hide watermark -->
+    <div id="mediaLightbox" class="lightbox">
+        <div class="lightbox-counter" id="lightboxCounter">1 / 10</div>
+        <div class="lightbox-close-btn" onclick="closeLightbox()">&times;</div>
+        <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">&#10094;</button>
+        <div class="lightbox-content-wrapper" id="lightboxContent"></div>
+        <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">&#10095;</button>
+    </div>
+
+    <!-- 1-Technical Modal -->
+    <div id="skillM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('skillM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-laptop-code"></i> Technical Hub</h2>
+        
+        <!-- Inner buttons matching main grid -->
+        <div class="card-grid" style="margin-bottom: 40px;">
+            <button onclick="launchAppFile('Narendra-CV.docx', 'doc')" class="card-btn"><i class="fa-solid fa-file-word" style="color:#2b579a;"></i><span>Professional CV</span></button>
+            <button onclick="launchAppFile('Learning-Data.docx', 'doc')" class="card-btn"><i class="fa-solid fa-book" style="color:#e65100;"></i><span>Learning Vault</span></button>
+            <button onclick="launchAppFile('project.xlsx', 'excel')" class="card-btn"><i class="fa-solid fa-file-excel" style="color:#217346;"></i><span>Project Excel</span></button>
+            <button onclick="launchAppFile('Project-Details.docx', 'doc')" class="card-btn"><i class="fa-solid fa-paste" style="color:#000;"></i><span>Project Word</span></button>
+        </div>
+        
+        <div class="skill-desc">
+            <h3>🐧 Linux System Engineering & Automation</h3>
+            <p>Mastery in managing enterprise Linux distributions including Ubuntu, Debian, RedHat, and CentOS. Proficient in root-level troubleshooting, system architecture design, memory profiling, and file system management.</p>
+        </div>
+        <div class="skill-desc" style="border-left-color:#d84315;">
+            <h3>🏗️ Terraform (Infrastructure as Code)</h3>
+            <p>Architecting production-grade multi-tier enterprise cloud topologies across Microsoft Azure cloud framework using modular HashiCorp Configuration Language (HCL).</p>
+        </div>
+        <div class="skill-desc" style="border-left-color:#0089d6;">
+            <h3>☁️ Microsoft Azure Enterprise Architecture</h3>
+            <p>End-to-end design strategy implementation for scalable high-availability computing topologies including Azure Kubernetes Service (AKS), Azure App Services, Scale Sets, and Azure Functions.</p>
+        </div>
+    </div></div>
+
+    <!-- 2- General Knowledge Modal -->
+    <div id="gkM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('gkM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-book-open"></i> GK Library</h2>
+        <div class="card-grid">
+            <button onclick="launchAppFile('https://drive.google.com/file/d/1ZDaToifCyj7dE_I6nSvLe_LgA-6JYAYG/preview', 'drive')" class="card-btn"><i class="fa-solid fa-monument" style="color:#8d6e63;"></i><span>1. Indian History</span></button>
+            <button onclick="launchAppFile('https://drive.google.com/file/d/1fYz4mj4h0GZoPeARCFVMdhcUoM74qTCp/preview', 'drive')" class="card-btn"><i class="fa-solid fa-earth-asia" style="color:#1e88e5;"></i><span>2. Geography</span></button>
+            <button onclick="launchAppFile('https://drive.google.com/file/d/1391ZXxtIfgbKVxHUWZ-A4ZGusChc3HZg/preview', 'drive')" class="card-btn"><i class="fa-solid fa-flask" style="color:#43a047;"></i><span>3. Science & Tech</span></button>
+            <button onclick="launchAppFile('https://drive.google.com/file/d/14EoiD_tFnKLADYE6pwMVMvmCusurr5Zv/preview', 'drive')" class="card-btn"><i class="fa-solid fa-scale-balanced" style="color:#fb8c00;"></i><span>4. Constitution</span></button>
+        </div>
+    </div></div>
+
+    <!-- 8- Social site Modal -->
+    <div id="socialM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('socialM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-share-nodes"></i> Connect with Me</h2>
+        <div class="card-grid">
+            <a href="https://www.linkedin.com/in/narendra-mahi" class="card-btn"><i class="fa-brands fa-linkedin" style="color:#0077b5;"></i><span>LinkedIn</span></a>
+            <a href="https://www.facebook.com/profile.php?id=100008720538562" class="card-btn"><i class="fa-brands fa-facebook" style="color:#1877f2;"></i><span>Facebook</span></a>
+            <a href="https://www.instagram.com/narendramahi7736/" class="card-btn"><i class="fa-brands fa-instagram" style="color:#e1306c;"></i><span>Instagram</span></a>
+        </div>
+    </div></div>
+
+    <!-- 5- Entertainment Modal -->
+    <div id="entM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('entM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-clapperboard"></i> Entertainment Hub</h2>
+        
+        <div class="card-grid" style="margin-bottom:40px;">
+            <button onclick="showEnt('music-box')" class="card-btn"><i class="fa-solid fa-music" style="color:#ff4500;"></i><span>Music</span></button>
+            <button onclick="showEnt('reel-box')" class="card-btn"><i class="fa-solid fa-film" style="color:#8e44ad;"></i><span>Reels</span></button>
+            <button onclick="showEnt('image-box')" class="card-btn"><i class="fa-solid fa-image" style="color:#2e7d32;"></i><span>Images</span></button>
+            <button onclick="showEnt('shorts-box')" class="card-btn"><i class="fa-brands fa-facebook-square" style="color:#1877f2;"></i><span>FB Shorts</span></button>
+        </div>
+        
+        <div id="music-box" style="display:none; overflow-y: auto;"><div id="music-list"></div></div>
+        <div id="reel-box" style="display:none; overflow-y: auto;"><div class="reel-grid" id="rGrid"></div></div>
+        <div id="image-box" style="display:none; overflow-y: auto;"><div class="photo-grid" id="iGrid"></div></div>
+        
+        <!-- SHORTS SECTION (FB Links retained completely to maintain size) -->
+        <div id="shorts-box" style="display:none; overflow-y: auto;">
+            <div class="yt-grid">
+                <a href="https://www.facebook.com/profile.php?id=100064451363636" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>💎 FB Creator 1</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61591311672230" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🔥 FB Creator 2</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61589914349566" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🌟 FB Creator 3</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61590484288068" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>✨ FB Creator 4</span></a>
+                <a href="https://www.facebook.com/shaileshbhai.shaileshbhai.58" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SB&background=random&color=fff" alt="Profile"><span>👑 Shaileshbhai</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61591634983013" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🍀 FB Creator 5</span></a>
+                <a href="https://www.facebook.com/saliniqveen" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=SQ&background=random&color=fff" alt="Profile"><span>👸 Salini Qveen</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61561295662890" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🌺 FB Creator 6</span></a>
+                <a href="https://www.facebook.com/Rzl.888" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RZ&background=random&color=fff" alt="Profile"><span>💫 Rzl 888</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61582464945111" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🦋 FB Creator 7</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61590264569120" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🌸 FB Creator 8</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61567940280859" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🎉 FB Creator 9</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61550911270517" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🎈 FB Creator 10</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61590789418575" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🎸 FB Creator 11</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61556884852965" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🎨 FB Creator 12</span></a>
+                <a href="https://www.facebook.com/profile.php?id=100094047290015" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🚀 FB Creator 13</span></a>
+                <a href="https://www.facebook.com/missauraxofficial" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MA&background=random&color=fff" alt="Profile"><span>💋 Miss Aurax</span></a>
+                <a href="https://www.facebook.com/profile.php?id=100064981717931" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🎵 FB Creator 14</span></a>
+                <a href="https://www.facebook.com/rocky.bhai.82103" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RB&background=random&color=fff" alt="Profile"><span>💪 Rocky Bhai</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61572257706066" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🔥 FB Creator 15</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61580061658528" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🌟 FB Creator 16</span></a>
+                <a href="https://www.facebook.com/wowmami2050" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=WM&background=random&color=fff" alt="Profile"><span>😍 Wow Mami</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61565266460632" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>💖 FB Creator 17</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61576463601405" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>✨ FB Creator 18</span></a>
+                <a href="https://www.facebook.com/Saravlog2945" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SV&background=random&color=fff" alt="Profile"><span>📸 Sara Vlog</span></a>
+                <a href="https://www.facebook.com/pihu.tiwari.664189" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=PT&background=random&color=fff" alt="Profile"><span>🌸 Pihu Tiwari</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61582111041586" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🍀 FB Creator 19</span></a>
+                <a href="https://www.facebook.com/yashika.rajput.589831" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=YR&background=random&color=fff" alt="Profile"><span>👸 Yashika Raj.</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61558236181834" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=FC&background=random&color=fff" alt="Profile"><span>🎸 FB Creator 20</span></a>
+            </div>
+        </div>
+    </div></div>
+
+    <!-- 6- Youtube Modal -->
+    <div id="ytM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('ytM')">&times;</span>
+        <h2 class="modal-title" style="color: #d50000; border-bottom-color: #d50000;"><i class="fa-brands fa-youtube"></i> Creators Shorts</h2>
+        <div class="yt-grid">
+            <a href="https://youtube.com/@ziyasiddiquivlogs?si=nmfP_zEQIbLcVgQZ" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=ZS&background=random&color=fff" alt="Profile"><span>🌟 Ziya Siddiqui</span></a>
+            <a href="https://youtube.com/@w2shorts?si=lHtDhCGsiDcQOFil" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=WS&background=random&color=fff" alt="Profile"><span>🔥 W2 Shorts</span></a>
+            <a href="https://youtube.com/@vedashriii?si=yXSEmItI1O1NbSbT" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=VE&background=random&color=fff" alt="Profile"><span>🌺 Vedashriii</span></a>
+            <a href="https://youtube.com/@theviral-r7s?si=UX2WoAMqiXhtAI_T" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=TR&background=random&color=fff" alt="Profile"><span>🚀 The Viral R7s</span></a>
+            <a href="https://youtube.com/@sumanmodi5274?si=EwYY6XOWFiarmHYn" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SM&background=random&color=fff" alt="Profile"><span>💫 Suman Modi</span></a>
+            <a href="https://youtube.com/@simiyadavsimran?si=3q2osXHhyn2AATar" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=SY&background=random&color=fff" alt="Profile"><span>🦋 Simi Yadav</span></a>
+            <a href="https://youtube.com/@smilee_doll_aishh?si=kK6HrETUj7Xk0fjT" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=SA&background=random&color=fff" alt="Profile"><span>🌸 Smilee Doll</span></a>
+            <a href="https://youtube.com/@anjalibaliyan03?si=ZR77jfbrdEUVeucA" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=AB&background=random&color=fff" alt="Profile"><span>✨ Anjali Baliyan</span></a>
+            <a href="https://youtube.com/@artishortsvlogs?si=Z8KiJnZ3j2LOYCKe" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=AS&background=random&color=fff" alt="Profile"><span>🎭 Arti Shorts</span></a>
+            <a href="https://youtube.com/@haryanvi_song.?si=g2WhQTYaJ4tn45Nu" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=HS&background=random&color=fff" alt="Profile"><span>🎵 Haryanvi Song</span></a>
+            <a href="https://youtube.com/@hemachoudhary9868?si=1wR-oPDq6Epk-kGu" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=HC&background=random&color=fff" alt="Profile"><span>🌻 Hema Ch.</span></a>
+            <a href="https://youtube.com/@geetabhosale_13?si=8BbuJhA3wk6oudvn" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=GB&background=random&color=fff" alt="Profile"><span>👑 Geeta Bhosale</span></a>
+            <a href="https://youtube.com/@girlzunplugged2.0?si=zi5sxz1i2Ncww9XT" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=GU&background=random&color=fff" alt="Profile"><span>🎸 Girlz Unplug</span></a>
+            <a href="https://youtube.com/@khushi_paliwal?si=8XcXMek7u9y7eezA" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=KP&background=random&color=fff" alt="Profile"><span>😊 Khushi Paliwal</span></a>
+            <a href="https://youtube.com/@khushivermaofficial977?si=wUsg89zndxdF4Fft" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=KV&background=random&color=fff" alt="Profile"><span>🎈 Khushi Verma</span></a>
+            <a href="https://youtube.com/@simonnn-o9x?si=8qt2PqTqjY9qpP0g" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=S&background=random&color=fff" alt="Profile"><span>⚡ Simonnn</span></a>
+            <a href="https://youtube.com/@divyasharmashorts09?si=WIlzfaEXrz5b_uul" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=DS&background=random&color=fff" alt="Profile"><span>💖 Divya Sharma</span></a>
+            <a href="https://youtube.com/@ayuzin?si=dBHxFEUbL6g8-9uS" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=A&background=random&color=fff" alt="Profile"><span>🔥 Ayuzin</span></a>
+            <a href="https://youtube.com/@meenuprajapatiji?feature=shared" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MP&background=random&color=fff" alt="Profile"><span>🕊️ Meenu Praj.</span></a>
+            <a href="https://youtube.com/@monik.dancer-fp7ku?si=xRYDCDAmHcRj5zOP" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=MD&background=random&color=fff" alt="Profile"><span>💃 Monik Dancer</span></a>
+            <a href="https://youtube.com/@myragoswamiofficial1811?si=l1-MaJoNGzbjcDhf" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=MG&background=random&color=fff" alt="Profile"><span>🌟 Myra Goswami</span></a>
+            <a href="https://youtube.com/@singh79768?si=WPEe6eMqrDIeWQLv" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=S7&background=random&color=fff" alt="Profile"><span>🦁 Singh 79768</span></a>
+            <a href="https://youtube.com/@prachityagivlogs?si=RA98fqgeQVJi89o_" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=PT&background=random&color=fff" alt="Profile"><span>📸 Prachi Tyagi</span></a>
+            <a href="https://youtube.com/@rojee_das23?si=sbn3IHrhACXBHBY1" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=RD&background=random&color=fff" alt="Profile"><span>🌺 Rojee Das</span></a>
+            <a href="https://youtube.com/@pk_creator22?si=zOTrY76MzjxZrpvW" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=PC&background=random&color=fff" alt="Profile"><span>🎬 PK Creator</span></a>
+            <a href="https://youtube.com/@reshma_choudharyyy?si=yCctMr6Kxi_A1ww5" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RC&background=random&color=fff" alt="Profile"><span>🌷 Reshma Ch.</span></a>
+            <a href="https://youtube.com/@mkfunnyread?si=rB3pHLpUjKSNOTc-" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=MR&background=random&color=fff" alt="Profile"><span>😂 MK Funny</span></a>
+            <a href="https://youtube.com/@ai05cinematic?si=Xa2Kn1V_NPAIZ0SR" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=AC&background=random&color=fff" alt="Profile"><span>🎥 AI 05 Cinema</span></a>
+            <a href="https://youtube.com/@sapna3538?si=ZCnUJV411ydJR4aY" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=Sapna&background=random&color=fff" alt="Profile"><span>🌙 Sapna</span></a>
+            <a href="https://youtube.com/@homedanceacdamy?si=zGl6Gpfk8ng3Bw2x" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=HD&background=random&color=fff" alt="Profile"><span>🩰 Home Dance</span></a>
+            <a href="https://youtube.com/@monirpayel295?si=vhG1meNp24SfISEI" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=MP&background=random&color=fff" alt="Profile"><span>💎 Monir Payel</span></a>
+            <a href="https://youtube.com/@payal_rani2?si=7LaGsrmRdmCASFrz" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=PR&background=random&color=fff" alt="Profile"><span>👑 Payal Rani</span></a>
+            <a href="https://youtube.com/@vanshikat44?si=KJpBf9nkicZb1tv4" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=VT&background=random&color=fff" alt="Profile"><span>🎀 Vanshika T</span></a>
+            <a href="https://youtube.com/@manav_comments_01?si=mVd0y8HMDLebR94u" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MC&background=random&color=fff" alt="Profile"><span>💬 Manav Comm.</span></a>
+        </div>
+    </div></div>
+
+    <!-- 4- Calculator Modal -->
+    <div id="calcM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('calcM')" style="top: 20px;">&times;</span>
+        <div class="calc-wrapper">
+            <div class="calc-display">
+                <div id="calc-expr"></div>
+                <div id="calc-res">0</div>
+            </div>
+            <div class="calc-grid">
+                <!-- Row 1 -->
+                <button class="calc-btn clear" onclick="calcPress('C')">AC</button>
+                <button class="calc-btn adv" onclick="calcPress('sq')">x²</button>
+                <button class="calc-btn adv" onclick="calcPress('cu')">x³</button>
+                <button class="calc-btn op" onclick="calcPress('/')">÷</button>
+                
+                <!-- Row 2 -->
+                <button class="calc-btn" onclick="calcPress('7')">7</button>
+                <button class="calc-btn" onclick="calcPress('8')">8</button>
+                <button class="calc-btn" onclick="calcPress('9')">9</button>
+                <button class="calc-btn op" onclick="calcPress('*')">×</button>
+                
+                <!-- Row 3 -->
+                <button class="calc-btn" onclick="calcPress('4')">4</button>
+                <button class="calc-btn" onclick="calcPress('5')">5</button>
+                <button class="calc-btn" onclick="calcPress('6')">6</button>
+                <button class="calc-btn op" onclick="calcPress('-')">-</button>
+                
+                <!-- Row 4 -->
+                <button class="calc-btn" onclick="calcPress('1')">1</button>
+                <button class="calc-btn" onclick="calcPress('2')">2</button>
+                <button class="calc-btn" onclick="calcPress('3')">3</button>
+                <button class="calc-btn op" onclick="calcPress('+')">+</button>
+                
+                <!-- Row 5 -->
+                <button class="calc-btn clear" onclick="calcPress('Del')">DEL</button>
+                <button class="calc-btn" onclick="calcPress('0')">0</button>
+                <button class="calc-btn" onclick="calcPress('.')">.</button>
+                <button class="calc-btn eq" onclick="calcPress('=')">=</button>
+            </div>
+        </div>
+    </div></div>
+
+    <!-- 7- Kundai - horoscope Modal (MASSIVE OUTPUT) -->
+    <div id="astroM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('astroM')">&times;</span>
+        <h2 class="modal-title" style="color: #ff8f00; border-bottom-color: #ff8f00;"><i class="fa-solid fa-star-and-crescent"></i> Kundai - Horoscope</h2>
+        <p style="text-align:center; font-size:15px; color:#555; margin-top:-15px; margin-bottom: 30px;">(Enter details for genuine 2+ pages detailed prediction)</p>
+        
+        <div style="max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;">
+            <label style="font-weight:700; color: #333; font-size: 14px; text-transform: uppercase;">Aapka Pura Naam:</label>
+            <input type="text" id="astroName" class="astro-input" placeholder="e.g. Narendra Mahi">
+            
+            <label style="font-weight:700; color: #333; font-size: 14px; text-transform: uppercase;">Janam Din (Date of Birth):</label>
+            <input type="date" id="astroDOB" class="astro-input">
+            
+            <label style="font-weight:700; color: #333; font-size: 14px; text-transform: uppercase;">Janam Sthan (Place of Birth):</label>
+            <input type="text" id="astroPlace" class="astro-input" placeholder="e.g. Delhi, India">
+            
+            <button onclick="generateKundali()" class="card-btn" style="width: 100%; aspect-ratio: auto; padding: 15px; background:#ff8f00; color: #fff; border:none; font-size: 18px;">🔍 Generate Detailed Horoscope</button>
+        </div>
+
+        <div id="astroResult" class="astro-result-box" style="max-width: 800px; margin-left: auto; margin-right: auto;">
+            <!-- Super long results dynamically populate here -->
+        </div>
+    </div></div>
+
+    <script>
+        // STRICT ANTI PULL-TO-REFRESH JS
+        document.body.style.overscrollBehavior = 'none';
+
+        let appHistoryTracker = [];
+        let imagesArray = [];
+        let reelsArray = [];
+        let currentLightboxArray = [];
+        let currentLightboxIndex = 0;
+        let currentMediaType = '';
+
+        /* 🔥 APP FIX: ANTI PULL-TO-REFRESH SCRIPT 🔥 */
+        let touchStartY = 0;
+        document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchmove', e => {
+            const touchY = e.touches[0].clientY;
+            const touchDiff = touchY - touchStartY;
+            if (touchDiff > 0) { 
+                const scrollableContainer = e.target.closest('.modal-content, #appFullscreenViewer, #music-box, #reel-box, #image-box, #shorts-box, .yt-grid, .astro-result-box');
+                if (!scrollableContainer || scrollableContainer.scrollTop <= 0) {
+                    if (e.cancelable) e.preventDefault(); 
+                }
+            }
+        }, { passive: false });
+
+        function openM(id) { 
+            document.getElementById(id).style.display = "block"; 
+            if (!appHistoryTracker.includes(id)) {
+                appHistoryTracker.push(id);
+                window.history.pushState({viewId: id}, "");
+            }
+            window.scrollTo(0, 0); // Scroll to top when modal opens
+        }
+        
+        function closeM(id) { 
+            document.getElementById(id).style.display = "none"; 
+            appHistoryTracker = appHistoryTracker.filter(item => item !== id);
+        }
+
+        function launchAppFile(filePath, fileType) {
+            const rootDomainPath = window.location.origin + window.location.pathname;
+            const computedFileUrl = filePath.startsWith('http') ? filePath : (rootDomainPath.substring(0, rootDomainPath.lastIndexOf("/") + 1) + filePath);
+            let finalEmbedUrl = "";
+            
+            if (fileType === 'doc' || fileType === 'pdf') {
+                finalEmbedUrl = "https://docs.google.com/gview?url=" + encodeURIComponent(computedFileUrl) + "&embedded=true";
+            }
+            else if (fileType === 'excel') {
+                finalEmbedUrl = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(computedFileUrl);
+            }
+            else if (fileType === 'drive' || fileType === 'url') {
+                finalEmbedUrl = computedFileUrl;
+            }
+            
+            document.getElementById('directLinkBtn').href = computedFileUrl;
+            const frameContainer = document.getElementById('appViewerFrameWrapper');
+            frameContainer.innerHTML = `<iframe src="${finalEmbedUrl}" allow="autoplay" style="width:100%; height:100%;"></iframe>`;
+            const viewerContainer = document.getElementById('appFullscreenViewer');
+            viewerContainer.style.display = "block";
+            
+            if (!appHistoryTracker.includes('appFullscreenViewer')) {
+                appHistoryTracker.push('appFullscreenViewer');
+                window.history.pushState({viewId: 'appFullscreenViewer'}, "");
+            }
+        }
+
+        function closeAppFile() {
+            document.getElementById('appFullscreenViewer').style.display = "none";
+            document.getElementById('appViewerFrameWrapper').innerHTML = "";
+            appHistoryTracker = appHistoryTracker.filter(item => item !== 'appFullscreenViewer');
+        }
+
+        function openLightbox(type, index) {
+            document.getElementById('mediaLightbox').style.display = "flex";
+            currentMediaType = type;
+            currentLightboxIndex = index;
+            
+            if(type === 'image') currentLightboxArray = imagesArray;
+            if(type === 'reel') currentLightboxArray = reelsArray;
+            
+            if (!appHistoryTracker.includes('mediaLightbox')) {
+                appHistoryTracker.push('mediaLightbox');
+                window.history.pushState({viewId: 'mediaLightbox'}, "");
+            }
+            renderLightboxMedia();
+        }
+
+        function closeLightbox() {
+            document.getElementById('mediaLightbox').style.display = "none";
+            document.getElementById('lightboxContent').innerHTML = ""; 
+            appHistoryTracker = appHistoryTracker.filter(item => item !== 'mediaLightbox');
+        }
+
+        function navLightbox(direction) {
+            currentLightboxIndex += direction;
+            if (currentLightboxIndex < 0) currentLightboxIndex = currentLightboxArray.length - 1;
+            if (currentLightboxIndex >= currentLightboxArray.length) currentLightboxIndex = 0;
+            renderLightboxMedia();
+        }
+
+        function renderLightboxMedia() {
+            const contentBox = document.getElementById('lightboxContent');
+            const counter = document.getElementById('lightboxCounter');
+            const mediaUrl = currentLightboxArray[currentLightboxIndex];
+            
+            counter.innerText = `${currentLightboxIndex + 1} / ${currentLightboxArray.length}`;
+            contentBox.innerHTML = ""; 
+            
+            if (currentMediaType === 'reel') {
+                contentBox.innerHTML = `<video src="${mediaUrl}" controls autoplay style="width:100%; height:100%; object-fit:contain;"></video>`;
+            } else {
+                contentBox.innerHTML = `<img src="${mediaUrl}" alt="Media">`;
+            }
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (appHistoryTracker.length > 0) {
+                let activelyOpenView = appHistoryTracker.pop();
+                if (activelyOpenView === 'appFullscreenViewer') { closeAppFile(); }
+                else if (activelyOpenView === 'mediaLightbox') { closeLightbox(); }
+                else { document.getElementById(activelyOpenView).style.display = "none"; }
+                window.history.pushState(null, null, window.location.pathname);
+            }
+        });
+        window.history.pushState(null, null, window.location.pathname);
+
+        function showEnt(id) {
+            document.getElementById('music-box').style.display = "none";
+            document.getElementById('reel-box').style.display = "none";
+            document.getElementById('image-box').style.display = "none";
+            document.getElementById('shorts-box').style.display = "none";
+            document.getElementById(id).style.display = "block";
+
+            if(id === 'image-box' && document.getElementById('iGrid').innerHTML === "") {
+                const g = document.getElementById('iGrid');
+                fetch("https://api.github.com/repos/narendramahi007-cloud/my-media12/contents/Images")
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(file => {
+                        if(file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                            imagesArray.push(file.download_url);
+                            let arrayIndex = imagesArray.length - 1;
+                            g.innerHTML += `<div class="photo-card" onclick="openLightbox('image', ${arrayIndex})"><img src="${file.download_url}" loading="lazy"></div>`;
+                        }
+                    });
+                });
+            }
+            
+            if(id === 'music-box' && document.getElementById('music-list').innerHTML === "") {
+                const m = document.getElementById('music-list');
+                fetch("https://api.github.com/repos/narendramahi007-cloud/my-media12/contents/Music")
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(file => {
+                        if(file.name.endsWith('.mp3')) m.innerHTML += `<div class="audio-item"><i class="fa-solid fa-play-circle" style="color:#ff4500; font-size:25px; cursor:pointer;"></i><span>${file.name.replace('.mp3', '').replaceAll('_', ' ')}</span><audio controls preload="none" onplay="stopOtherMedia(this)"><source src="${file.download_url}" type="audio/mpeg"></audio></div>`;
+                    });
+                });
+            }
+
+            if(id === 'reel-box' && document.getElementById('rGrid').innerHTML === "") {
+                const r = document.getElementById('rGrid');
+                fetch("https://api.github.com/repos/narendramahi007-cloud/my-media/contents/Reels")
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(file => {
+                        if(file.name.endsWith('.mp4')) {
+                            reelsArray.push(file.download_url);
+                            let arrayIndex = reelsArray.length - 1;
+                            r.innerHTML += `<div class="reel-card" onclick="openLightbox('reel', ${arrayIndex})">
+                                                <video src="${file.download_url}" preload="metadata"></video>
+                                                <i class="fa-solid fa-circle-play play-overlay"></i>
+                                            </div>`;
+                        }
+                    });
+                });
+            }
+        }
+
+        function stopOtherMedia(currentPlaying) {
+            const allAudios = document.getElementsByTagName('audio');
+            const allVideos = document.getElementsByTagName('video');
+            for(let el of allAudios) { if(el !== currentPlaying) { el.pause(); el.currentTime = 0; } }
+            for(let el of allVideos) { if(el !== currentPlaying) { el.pause(); el.currentTime = 0; } }
+        }
+        
+        /* 🔥 FULLSCREEN CALCULATOR LOGIC 🔥 */
+        let currentExpr = "";
+        let isEvaluated = false;
+        function calcPress(val) {
+            if (val === '=') {
+                try {
+                    let expressionToEval = currentExpr.replace(/×/g, '*').replace(/÷/g, '/');
+                    let ans = eval(expressionToEval);
+                    if(ans === undefined) ans = 0;
+                    document.getElementById('calc-expr').innerText = currentExpr + " =";
+                    document.getElementById('calc-res').innerText = ans;
+                    currentExpr = ans.toString();
+                    isEvaluated = true;
+                } catch(e) { document.getElementById('calc-res').innerText = "Error"; currentExpr = ""; }
+            } else if (val === 'C') {
+                currentExpr = "";
+                document.getElementById('calc-expr').innerText = "";
+                document.getElementById('calc-res').innerText = "0";
+            } else if (val === 'Del') {
+                if(isEvaluated) { currentExpr = ""; isEvaluated = false; }
+                currentExpr = currentExpr.slice(0, -1);
+                document.getElementById('calc-res').innerText = currentExpr === "" ? "0" : currentExpr;
+            } else if (val === 'sq') { // Square
+                if(currentExpr !== "") {
+                    try {
+                        let ans = Math.pow(eval(currentExpr.replace(/×/g, '*').replace(/÷/g, '/')), 2);
+                        document.getElementById('calc-expr').innerText = `(${currentExpr})² =`;
+                        currentExpr = ans.toString();
+                        document.getElementById('calc-res').innerText = currentExpr;
+                        isEvaluated = true;
+                    } catch(e) { document.getElementById('calc-res').innerText = "Error"; currentExpr = ""; }
+                }
+            } else if (val === 'cu') { // Cube
+                if(currentExpr !== "") {
+                    try {
+                        let ans = Math.pow(eval(currentExpr.replace(/×/g, '*').replace(/÷/g, '/')), 3);
+                        document.getElementById('calc-expr').innerText = `(${currentExpr})³ =`;
+                        currentExpr = ans.toString();
+                        document.getElementById('calc-res').innerText = currentExpr;
+                        isEvaluated = true;
+                    } catch(e) { document.getElementById('calc-res').innerText = "Error"; currentExpr = ""; }
+                }
+            } else {
+                if(isEvaluated && !['+','-','*','/','×','÷'].includes(val)) {
+                    currentExpr = "";
+                }
+                isEvaluated = false;
+                currentExpr += val;
+                document.getElementById('calc-expr').innerText = currentExpr;
+                document.getElementById('calc-res').innerText = currentExpr;
+            }
+        }
+
+        /* 🔥 GENUINE MASSIVE ASTROLOGY KUNDALI (2 PAGE OUTPUT) 🔥 */
+        function generateKundali() {
+            let name = document.getElementById('astroName').value.trim();
+            let dob = document.getElementById('astroDOB').value;
+            let place = document.getElementById('astroPlace').value.trim();
+            
+            if(!name || !dob || !place) { 
+                alert("Bhai, apna naam, janam din (DOB) aur Janam Sthan teeno sahi se daalo tabhi genuine aur bada result aayega!"); 
+                return; 
+            }
+
+            // Real Day Calculation
+            let dateObj = new Date(dob);
+            let days = ["Sunday (Ravivar)", "Monday (Somvar)", "Tuesday (Mangalvar)", "Wednesday (Budhvar)", "Thursday (Guruvar)", "Friday (Shukravar)", "Saturday (Shanivar)"];
+            let exactDay = days[dateObj.getDay()];
+            let monthName = dateObj.toLocaleString('default', { month: 'long' });
+            let birthYear = dateObj.getFullYear();
+
+            // Seed logic
+            let seed = name.length * place.length + parseInt(dob.replace(/-/g, ''));
+            let rashiArr = ["Mesh (Aries)", "Vrishabha (Taurus)", "Mithun (Gemini)", "Kark (Cancer)", "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchik (Scorpio)", "Dhanu (Sagittarius)", "Makar (Capricorn)", "Kumbh (Aquarius)", "Meen (Pisces)"];
+            let rashi = rashiArr[seed % 12];
+            let nakshatraArr = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
+            let nakshatra = nakshatraArr[(seed + 7) % 27];
+
+            // Detailed Data Arrays to make output extremely long
+            let basicNature = [
+                "Aapka swabhav bahut hi shant, samajhdar aur door-drishti (visionary) rakhne wala hai. Aap hamesha har situation ko pehle analyze karte hain, uske baad hi koi kadam uthate hain. Samaj me aapki chhavi ek imaandaar aur sahasi vyakti ki hai.",
+                "Aap dil ke bahut saaf aur thode emotional hain. Kabhi-kabhi log aapki achhai ka fayda uthane ki koshish karte hain, lekin aapki andar ki samajh aapko hamesha bacha leti hai. Aap naye ideas aur creativity ke dhani hain.",
+                "Aap ek leader (netritva karne wale) ki tarah hain. Mushkil samay me bhi aapa nahi khote aur apni team ya parivar ko sath lekar chalne me vishwas rakhte hain. Aapko jhuthe log bilkul pasand nahi aate."
+            ];
+
+            let careerBiz = [
+                "Aapke graho ke anusaar, aap Cloud Computing, IT Architecture, aur Cyber Security me bahut aage ja sakte hain. Agar aap apna business start karte hain to usme bhi IT consulting, Networking ya Tech Solutions me apko adbhut labh milega. Aane wale 3-5 saal aapke career ke liye ek golden phase sabit honge. Investment karte samay apne seniors ya anubhavi logo ki salah zaroor lein.",
+                "Vyapar aur naukri dono me aapki ruchi hai, lekin aap management aur Automation jaise sectors me jyada success payenge. Aap me naye system design karne ki aur complex problem solve karne ki kamaal ki kshamta hai. Business me kisi par bhi ankh band karke bharosa na karein, khas taur par finance ke mamle me. Apne skill set ko aur upgrade karna aapko aur bhi uchaiyo par le jayega.",
+                "Sarkari kshetra, Defence Networks, ya top-level Corporate Architect ki post aapke liye bani hai. Aap hard work se jyada smart work par focus karte hain jo ki aapki sabse badi taqat hai. Aane wale agle 2 saalo me koi bada project ya promotion aapka intezaar kar raha hai. Videsh yatra ya international clients ke sath kaam karne ka prabal yog hai."
+            ];
+
+            let financialStatus = [
+                "Dhan ke mamle me aap bahut lucky hain. Shuruat me shayad thoda sangharsh raha ho, lekin ab aane wala samay aapko aarthik roop se mazboot banayega. Property ya real estate me kiya gaya nivesh aapko bhavishya me dugna labh dega.",
+                "Paisa aapke paas aata hai lekin rukta kam hai, isliye saving aur mutual funds ya share market me long-term investment shuru karna aapke liye achha rahega. Achanak dhan labh hone ke bahut strong chances ban rahe hain.",
+                "Aapki aarthik sthiti din-pratidin mazboot hoti jayegi. Aap apne parivar ki sabhi zarurato ko poora karenge. Kisi naye source of income (jaise passive income ya side hustle) se aapko aane wale dino me bada fayda hone wala hai."
+            ];
+
+            let relationsData = [
+                "Pariwar aur prem sambandho me aap bahut wafadaar hain. Aap jisse bhi judte hain, poore dil se judte hain. Aapke jeevan sathi ka naam shayad 'A', 'S', 'M', 'R' ya 'N' akshar se shuru ho sakta hai. Woh aapke har faisle me aapka mazbooti se sath denge.",
+                "Rishton me aap transparency chahte hain. Aapke dosto ki sankhya kam ho sakti hai, lekin jo bhi hain wo ekdum genuine aur life-long sath nibhane wale hain. Shaadi ke baad aapke bhaagya (luck) me achha khasa uchhaal aayega.",
+                "Aap parivar ke chahite hain aur har kisi ka dhyan rakhte hain. Kabhi-kabhi gusse me aap kuch aisa bol dete hain jisse samne wale ko bura lagta hai, isliye rishton me communication ko shant tarike se rakhein. Love life bahut romantic aur stable rahegi."
+            ];
+
+            let healthWarn = [
+                "Apne pachan tantra (digestion) aur kamar dard ka dhyan rakhein. Continuous screen time ke karan aakhon me stress ho sakta hai. Rozana subah dhyan (meditation) aur halka vyayam karna aapke liye amrit saman hai.",
+                "Aapko mansik tanav (overthinking) se bachna chahiye. Kaam ke pressure ko apne dimag par hawi na hone dein. Sahi samay par neend lena aur paani jyada peena aapki health ke liye bohot zaroori hai.",
+                "Health mostly achhi rahegi, lekin mausam badalte waqt sardi-jukam ka dhyan rakhein. Apni diet me hari sabziyan aur dry fruits zarur shamil karein."
+            ];
+
+            let avoidList = ["Gussa (Anger)", "Jaldbaazi me liye gaye faisle (Haste)", "Bina test kiye Production me code dalna", "Kisi ko bina mange salah dena", "Overthinking karna"];
+            let luckColors = ["Lal (Red)", "Neela (Blue)", "Hara (Green)", "Safed (White)", "Peela (Yellow)", "Kala (Black)"];
+            let luckNums = [7, 3, 9, 1, 5, 8];
+            
+            let html = `
+                <div style="text-align:center; margin-bottom: 25px;">
+                    <h1 style="color: #d84315; margin-bottom: 5px; text-transform: uppercase;">Aapki Sampoorna Janam Kundali</h1>
+                    <p style="color: #666; font-size: 14px;"><strong>Naam:</strong> ${name.toUpperCase()} | <strong>DOB:</strong> ${dob} | <strong>Sthan:</strong> ${place.toUpperCase()}</p>
+                </div>
+                
+                <div style="background: #fff8e1; border-left: 5px solid #ffb300; padding: 15px; border-radius: 5px; margin-bottom: 25px;">
+                    <p style="margin: 5px 0;"><strong>Janam Din:</strong> Aapka janam <strong>${exactDay}</strong> ko ${monthName} ke mahine me hua tha, jo ek vishesh sanyog darshata hai.</p>
+                    <p style="margin: 5px 0;"><strong>Rashi:</strong> Aapki rashi <strong>${rashi}</strong> hai.</p>
+                    <p style="margin: 5px 0;"><strong>Nakshatra:</strong> Aap <strong>${nakshatra}</strong> nakshatra me paida hue hain.</p>
+                </div>
+
+                <div class="astro-section-title"><i class="fa-solid fa-user-astronaut"></i> Vyaktitva Aur Swabhav (Nature & Personality)</div>
+                <p style="text-align: justify;">${basicNature[seed % basicNature.length]} Aapke as-paas ke log aapki positive energy aur aatm-vishwas (confidence) se kafi prabhavit hote hain. Jab aap kisi chiz ko paane ki thaan lete hain, to usko haasil karke hi dam lete hain. Aap ek 'Never Give Up' attitude wale insaan hain.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-briefcase"></i> Kariyer Aur Vyapar (Jobs & Business)</div>
+                <p style="text-align: justify;">${careerBiz[seed % careerBiz.length]} Ek Cloud and Infra Automation Architect ke roop me aapka dimag bahut tez chalta hai. Technology ki duniya me aapka bhavishya bahut hi ujjwal hai. Naye updates aur certifications par hamesha nazar rakhein, kyunki wahi aapko next level tak lekar jayenge.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-indian-rupee-sign"></i> Aarthik Sthiti (Financial Status & Wealth)</div>
+                <p style="text-align: justify;">${financialStatus[seed % financialStatus.length]} Ek samay aisa aayega jab aapke paas income ke ek se jyada sources honge. Bas fizoolkharchi se bachein aur future planning pe achhe se dhyan dein.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-heart"></i> Rishtey Aur Parivar (Relations & Love)</div>
+                <p style="text-align: justify;">${relationsData[seed % relationsData.length]} Parivar ka sukh aapke bhagya me likha hai. Apne mata-pita ki sewa aur unka aashirwad hamesha aapke kamo me safalta dilayega. Dosto ke sath bhi aapka vyavahar hamesha madadgar hota hai.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-notes-medical"></i> Svasthya (Health & Wellness)</div>
+                <p style="text-align: justify;">${healthWarn[seed % healthWarn.length]} Jaan hai to jahaan hai. Apne kaam ke chakkar me apni health ko ignore na karein. Fitness rutine maintain karna aapke energy level ko double kar dega.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-triangle-exclamation"></i> Vishesh Savdhaniyan (Caution & Warnings)</div>
+                <ul style="line-height: 1.8;">
+                    <li>Aapko <strong>${avoidList[seed % avoidList.length]}</strong> se puri tarah bachna chahiye.</li>
+                    <li>Kisi anjaan vyakti ko bhari dhan udhaar na dein.</li>
+                    <li>Bade nirnay (decisions) lene se pehle 2 baar sochein, khaas kar gusse ki sthiti me.</li>
+                </ul>
+
+                <div class="astro-section-title"><i class="fa-solid fa-gem"></i> Shubh Sanket (Lucky Charm)</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div style="background: #e1f5fe; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; color: #0277bd; border: 1px solid #81d4fa;">
+                        🎨 Lucky Rang<br> <span style="font-size:20px;">${luckColors[seed % luckColors.length]}</span>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; color: #2e7d32; border: 1px solid #a5d6a7;">
+                        🔢 Lucky Number<br> <span style="font-size:20px;">${luckNums[seed % luckNums.length]} aur ${(luckNums[seed % luckNums.length]*2)+1}</span>
+                    </div>
+                    <div style="background: #fce4ec; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; color: #c2185b; border: 1px solid #f48fb1;">
+                        📅 Shubh Din<br> <span style="font-size:20px;">${days[(seed + 2) % 7]}</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding: 20px; background: #fff3e0; border-radius: 10px; border: 2px dashed #ff9800; text-align: center;">
+                    <h3 style="color: #e65100; margin-top: 0;">🌟 Aaj Ka Vishesh Din (Today's Horoscope) 🌟</h3>
+                    <p style="font-size: 16px; font-weight: 500; color: #333;">Aaj ka din aapke liye bahut shubh hai. Kisi naye project ya business deal ki baat ban sakti hai. Kisi purane dost se achanak sampark ho sakta hai jo aage chalkar faydemand sabit hoga. Aaj apne pending kaam khatam karne ke liye best din hai. Apna aatm-vishwas banaye rakhein!</p>
+                </div>
+            `;
+            
+            document.getElementById('astroResult').style.display = "block";
+            document.getElementById('astroResult').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
