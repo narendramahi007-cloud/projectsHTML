@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Narendra Mahi Cloud and Infra Automation Architect</title>
+    <link rel="icon" href="my-photos.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root { --accent: #7cfc00; --pink: #ff69b4; --dark: #1b5e20; --primary-border: #b71c1c; }
+        * { box-sizing: border-box; transition: 0.3s; }
+        
+        /* 🔥 PULL-TO-REFRESH STRICT BLOCK & BODY STYLES 🔥 */
+        body, html { 
+            margin: 0; padding: 0; font-family: 'Poppins', sans-serif; height: 100%; 
+            overscroll-behavior: none; 
+            touch-action: pan-y;
+            background-color: #f4f7f6;
+        }
+
+        .master-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #e0f2f1 0%, #ffffff 100%); z-index: -2; }
+        
+        /* 🔥 WATERMARK (HAR JAGAH DIKHEGA) 🔥 */
+        .watermark { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: url('my-photos.jpg') no-repeat center center/cover; 
+            opacity: 0.15; z-index: 9000; pointer-events: none; 
+        }
+
+        /* BACKGROUND ANIMATIONS */
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .icon { position: absolute; font-size: 50px; animation: floatUp 18s infinite linear; opacity: 0.6; }
+        .ic-docker { left: 15%; color: #2496ed; animation-delay: 0s; }
+        .ic-k8s { left: 35%; color: #326ce5; animation-delay: 3s; }
+        .ic-terraform { left: 55%; color: #844fba; animation-delay: 6s; }
+        .ic-cicd { right: 35%; color: #2e7d32; animation-delay: 9s; }
+        .ic-ms { right: 15%; color: #0089d6; animation-delay: 12s; }
+        .ic-linux { right: 5%; color: #f0ad4e; animation-delay: 15s; }
+        @keyframes floatUp { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+
+        /* 🔥 TOP LEFT TO MIDDLE HEADER 🔥 */
+        .top-left-header {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            width: 75%; 
+            z-index: 50;
+            text-align: left;
+        }
+
+        .name-title { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: clamp(26px, 6vw, 45px); 
+            text-transform: uppercase; 
+            margin: 0; 
+            line-height: 1.1;
+            background: linear-gradient(270deg, #ff0000, #ff7f00, #00ff00, #0000ff, #8b00ff, #ff007f);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientRGB 4s ease infinite;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        @keyframes gradientRGB { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .sub-title { 
+            font-size: clamp(12px, 3vw, 18px); color: #111; margin-top: 5px; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        /* 🔥 BOTTOM MAIN GRID MENU (APK STYLE) 🔥 */
+        .main-menu-container {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; padding: 0 15px; z-index: 100;
+        }
+
+        .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; justify-items: center; }
+        .card-btn {
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border: 2px solid var(--primary-border); border-radius: 20px;
+            width: 100%; max-width: 85px; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-decoration: none; color: #111; font-weight: 700; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.15); text-align: center;
+            padding: 5px; position: relative; z-index: 101; 
+        }
+        .card-btn:active { transform: scale(0.92); }
+        .card-btn i { font-size: 28px; margin-bottom: 6px; }
+        .card-btn span { font-size: 10px; line-height: 1.1; text-transform: uppercase; white-space: normal; }
+
+        /* 🔥 MODALS (Z-INDEX 1000 - BELOW WATERMARK 9000) 🔥 */
+        .modal { 
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; 
+            background: rgba(244, 247, 246, 0.98); overflow-y: auto; padding: 0; 
+            -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
+        }
+        .modal-content { 
+            background: transparent; margin: 0 auto; padding: 20px; width: 100%; max-width: 1200px; 
+            position: relative; min-height: 100vh; padding-top: 70px; padding-bottom: 50px;
+        }
+        
+        .close-btn { 
+            position: fixed; top: 15px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; z-index: 9500; 
+            background: var(--primary-border); border-radius: 50%; width: 45px; height: 45px; 
+            display: flex; align-items: center; justify-content: center; line-height: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .modal-title {
+            text-align: center; color: var(--primary-border); font-family: 'Orbitron', sans-serif;
+            margin-bottom: 30px; font-size: 26px; text-transform: uppercase; border-bottom: 2px solid var(--primary-border); padding-bottom: 10px; display: block;
+        }
+
+        .inner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; position: relative; z-index: 9500;}
+        .inner-btn {
+            background: #fff; border: 1.5px solid var(--primary-border); border-radius: 12px;
+            padding: 20px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 13px; color: var(--primary-border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
+        }
+        .inner-btn i { font-size: 35px; margin-bottom: 10px; }
+
+        /* App Fullscreen Viewer (Z-INDEX 100000 - ABOVE WATERMARK) */
+        .fullscreen-app-viewer { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 100000; overflow: hidden; overscroll-behavior: contain; }
+        .fullscreen-app-viewer iframe { width: 100%; height: 100%; border: none; margin: 0; padding: 0; background: #fff;}
+        .app-back-trigger { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #ff0000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100001; border: 2px solid #fff; }
+        .app-direct-link { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-size: 14px; z-index: 100001; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #fff; }
+
+        /* Media */
+        .audio-item { background: #fff; border: 1px solid var(--primary-border); margin: 10px 0; padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; z-index: 9500;}
+        .audio-item span { flex-grow: 1; font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        audio { height: 35px; border-radius: 5px; width: 150px; }
+        
+        .photo-grid, .reel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 20px; position: relative; z-index: 9500;}
+        .photo-card, .reel-card { border: 1.5px solid var(--primary-border); border-radius: 10px; overflow: hidden; height: 180px; background: #000; cursor: pointer; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .photo-card img, .reel-card video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.9); font-size: 40px; pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+        /* LIGHTBOX */
+        .lightbox { display: none; position: fixed; z-index: 100000; left: 0; top: 0; width: 100vw; height: 100vh; background-color: #000; align-items: center; justify-content: center; overscroll-behavior: contain; }
+        .lightbox-content-wrapper { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .lightbox-content-wrapper img, .lightbox-content-wrapper video { width: 100%; height: 100%; max-width: 100vw; max-height: 100vh; object-fit: contain; }
+        .lightbox-close-btn { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 35px; cursor: pointer; z-index: 100001; background: rgba(255,0,0,0.8); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff;}
+        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 25px; color: white; background: rgba(0,0,0,0.6); border: 2px solid #fff; cursor: pointer; padding: 15px 20px; border-radius: 50%; z-index: 100001; }
+        .lightbox-prev { left: 15px; } .lightbox-next { right: 15px; }
+        .lightbox-counter { position: absolute; top: 20px; left: 20px; color: white; font-size: 16px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 8px 20px; border-radius: 20px; z-index: 100001; border: 1px solid #fff;}
+
+        /* YouTube & Shorts Grid */
+        .yt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; margin-top: 20px; position: relative; z-index: 9500;}
+        .yt-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px 10px; border-radius: 15px; text-decoration: none; font-weight: 600; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
+        .yt-btn:active { transform: scale(0.95); }
+        .yt-btn img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px; border: 3px solid rgba(255, 255, 255, 0.9); background: white; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .yt-btn span { font-size: 12px; line-height: 1.2; color: #111; }
+        
+        .yt-color-1 { background: linear-gradient(135deg, #ff9a9e, #fecfef); } .yt-color-2 { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+        .yt-color-3 { background: linear-gradient(135deg, #84fab0, #8fd3f4); } .yt-color-4 { background: linear-gradient(135deg, #fccb90, #d57eeb); }
+        .yt-color-5 { background: linear-gradient(135deg, #e0c3fc, #8ec5fc); }
+
+        /* 🔥 FULL SCREEN MOBILE VIEW CALCULATOR WITH COLORFUL LOGOS 🔥 */
+        #calcM { background: #000; }
+        #calcM .modal-content { background: #0a0a0a; display: flex; flex-direction: column; padding: 0; min-height: 100vh; justify-content: center;}
+        .calc-wrapper { flex: 1; display: flex; flex-direction: column; max-width: 450px; width: 100%; height: 100vh; margin: 0 auto; justify-content: flex-end; position: relative; z-index: 9500; padding: 20px; padding-bottom: 40px;}
+        .calc-display { background: rgba(20,20,20,0.9); padding: 30px; border-radius: 20px; margin-bottom: 20px; text-align: right; font-family: 'Orbitron', monospace; border: 1px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.5); backdrop-filter: blur(10px);}
+        #calc-expr { font-size: 22px; color: #00e676; min-height: 30px; margin-bottom: 10px; text-shadow: 0 0 5px rgba(0, 230, 118, 0.5);}
+        #calc-res { font-size: 60px; color: #fff; overflow-x: auto; font-weight: bold; }
+        
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .calc-btn { 
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a); color: white; border: none; padding: 20px; font-size: 28px; border-radius: 50%; cursor: pointer; font-weight:bold; 
+            box-shadow:  5px 5px 10px #080808, -5px -5px 10px #222222; transition: all 0.1s; height: 80px; width: 100%; display: flex; align-items: center; justify-content: center;
+        }
+        .calc-btn:active { transform: scale(0.9) inset; box-shadow: inset 5px 5px 10px #080808, inset -5px -5px 10px #222222; }
+        .calc-btn.op { background: linear-gradient(145deg, #ff9800, #f57c00); color: #fff; box-shadow: 0 4px 15px rgba(255,152,0,0.4); border-radius: 25px;}
+        .calc-btn.adv { background: linear-gradient(145deg, #0277bd, #01579b); box-shadow: 0 4px 15px rgba(2,119,189,0.4); border-radius: 25px;}
+        .calc-btn.clear { background: linear-gradient(145deg, #e53935, #c62828); box-shadow: 0 4px 15px rgba(229,57,53,0.4); border-radius: 25px; font-size: 20px;}
+        .calc-btn.eq { background: linear-gradient(145deg, #43a047, #2e7d32); box-shadow: 0 4px 15px rgba(67,160,71,0.4); border-radius: 25px;}
+        
+        .calc-btn i { font-size: 24px; pointer-events: none;}
+
+        /* Kundali Styles */
+        .astro-wrapper { max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.95); padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative; z-index: 9500; border: 2px solid #ff9800;}
+        .astro-input { padding: 15px; border-radius: 10px; border: 2px solid var(--primary-border); font-size: 16px; width: 100%; margin-bottom: 15px; font-family: 'Poppins', sans-serif; background: #fff;}
+        .astro-input:focus { border-color: #ff9800; outline: none; box-shadow: 0 0 8px rgba(255, 152, 0, 0.4); }
+        .astro-result-box { margin-top: 20px; padding: 25px; background: rgba(255,255,255,0.97); border-radius: 15px; border: 2px solid #ff9800; display: none; line-height: 1.8; font-size: 15px; color: #222; position: relative; z-index: 9500; box-shadow: 0 5px 20px rgba(0,0,0,0.15);}
+        .astro-section-title { color: #d84315; font-size: 20px; font-weight: 700; border-bottom: 2px dashed #ffb74d; padding-bottom: 8px; margin-top: 25px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;}
+        
+        .k-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee;}
+        .k-table th, .k-table td { padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; }
+        .k-table th { background: #fff8e1; color: #d84315; width: 40%; font-weight: 700; }
+        .k-table tr:hover td, .k-table tr:hover th { background-color: #fff3e0; }
+
+        .skill-desc { background: rgba(255,255,255,0.9); border: 1.5px solid var(--primary-border); border-left: 8px solid var(--primary-border); padding: 20px; border-radius: 10px; margin-bottom: 15px; position: relative; z-index: 9500;}
+        .skill-desc h3 { margin-top: 0; color: var(--primary-border); }
+        .sub-box { display: none; overflow-y: auto; padding-bottom: 30px; }
+    </style>
+</head>
+<body>
+
+    <div class="master-bg"></div>
+    <div class="watermark"></div>
+
+    <div class="bg-animation">
+        <i class="fa-brands fa-docker icon ic-docker"></i>
+        <i class="fa-solid fa-dharmachakra icon ic-k8s"></i>
+        <i class="fa-solid fa-code icon ic-terraform"></i>
+        <i class="fa-solid fa-infinity icon ic-cicd"></i>
+        <i class="fa-brands fa-microsoft icon ic-ms"></i>
+        <i class="fa-brands fa-linux icon ic-linux"></i>
+    </div>
+
+    <!-- Header -->
+    <div class="top-left-header">
+        <h1 class="name-title">Narendra Mahi</h1>
+        <div class="sub-title"><i class="fa-solid fa-cloud-bolt" style="color:#b71c1c;"></i> Cloud & Infra Automation Architect</div>
+    </div>
+
+    <!-- Bottom APK Style Menu -->
+    <div class="main-menu-container">
+        <div class="card-grid">
+            <div onclick="openM('skillM')" class="card-btn"><i class="fa-solid fa-laptop-code" style="color:#4a148c;"></i><span>Technical</span></div>
+            <div onclick="openM('gkM')" class="card-btn"><i class="fa-solid fa-book-open" style="color:#0277bd;"></i><span>G.K.</span></div>
+            <div onclick="launchAppFile('networking.pdf', 'pdf')" class="card-btn"><i class="fa-solid fa-network-wired" style="color:#2e7d32;"></i><span>Network</span></div>
+            <div onclick="openM('calcM')" class="card-btn"><i class="fa-solid fa-calculator" style="color:#ef6c00;"></i><span>Calc</span></div>
+            <div onclick="openM('entM')" class="card-btn"><i class="fa-solid fa-clapperboard" style="color:#c2185b;"></i><span>Entertain</span></div>
+            <div onclick="openM('astroM')" class="card-btn"><i class="fa-solid fa-om" style="color:#ff8f00;"></i><span>Kundali</span></div>
+            <div onclick="openM('socialM')" class="card-btn"><i class="fa-solid fa-share-nodes" style="color:#00838f;"></i><span>Social</span></div>
+            <a href="mailto:Narendramahi007@gmail.com" class="card-btn" style="text-decoration:none;"><i class="fa-solid fa-address-book" style="color:#4e342e;"></i><span>Contact</span></a>
+        </div>
+    </div>
+
+    <!-- Fullscreen Doc Viewer -->
+    <div id="appFullscreenViewer" class="fullscreen-app-viewer">
+        <a id="directLinkBtn" href="#" class="app-direct-link" target="_blank"><i class="fa-solid fa-download"></i> Open / Download</a>
+        <div class="app-back-trigger" onclick="closeAppFile()"><i class="fa-solid fa-arrow-left"></i></div>
+        <div id="appViewerFrameWrapper" style="width:100%; height:100%; padding-top: 60px;"></div>
+    </div>
+
+    <!-- Media Lightbox -->
+    <div id="mediaLightbox" class="lightbox">
+        <div class="lightbox-counter" id="lightboxCounter">1 / 10</div>
+        <div class="lightbox-close-btn" onclick="closeLightbox()">&times;</div>
+        <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">&#10094;</button>
+        <div class="lightbox-content-wrapper" id="lightboxContent"></div>
+        <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">&#10095;</button>
+    </div>
+
+    <!-- 1. Technical -->
+    <div id="skillM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('skillM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-laptop-code"></i> Technical Hub</h2>
+        <div class="inner-grid">
+            <button onclick="launchAppFile('Narendra-CV.docx', 'doc')" class="inner-btn"><i class="fa-solid fa-file-word" style="color:#2b579a;"></i>Professional CV</button>
+            <button onclick="launchAppFile('Learning-Data.docx', 'doc')" class="inner-btn"><i class="fa-solid fa-book" style="color:#e65100;"></i>Learning Vault</button>
+            <button onclick="launchAppFile('project.xlsx', 'excel')" class="inner-btn"><i class="fa-solid fa-file-excel" style="color:#217346;"></i>Project Excel</button>
+            <button onclick="launchAppFile('Project-Details.docx', 'doc')" class="inner-btn"><i class="fa-solid fa-paste" style="color:#000;"></i>Project Word</button>
+        </div>
+        <div class="skill-desc"><h3>🐧 Linux System Engineering</h3><p>Mastery in managing enterprise Linux distributions (RHEL, Ubuntu, CentOS). Proficient in root-level troubleshooting, system architecture design, logical volume management (LVM), and bash shell automation.</p></div>
+        <div class="skill-desc" style="border-left-color:#d84315;"><h3>🏗️ Terraform (IaC)</h3><p>Architecting production-grade multi-tier enterprise cloud topologies across Azure using modular HCL. State file management, resource targeting, and integration with CI/CD pipelines.</p></div>
+        <div class="skill-desc" style="border-left-color:#0089d6;"><h3>☁️ Microsoft Azure Architecture</h3><p>End-to-end design strategy for scalable computing topologies including AKS (Azure Kubernetes Service), App Services, Virtual Machine Scale Sets, Load Balancers, and VNet Peering.</p></div>
+        <div class="skill-desc" style="border-left-color:#2e7d32;"><h3>♾️ CI/CD & DevOps Practices</h3><p>Building resilient pipelines using Azure DevOps and GitHub Actions. Containerization with Docker and orchestration with Kubernetes. Setting up monitoring using Prometheus & Grafana.</p></div>
+    </div></div>
+
+    <!-- 2. GK -->
+    <div id="gkM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('gkM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-book-open"></i> GK Library</h2>
+        <div class="inner-grid">
+            <button onclick="launchAppFile('https://drive.google.com/file/d/1ZDaToifCyj7dE_I6nSvLe_LgA-6JYAYG/preview', 'drive')" class="inner-btn"><i class="fa-solid fa-monument" style="color:#8d6e63;"></i>Indian History</button>
+            <button onclick="launchAppFile('https://drive.google.com/file/d/1fYz4mj4h0GZoPeARCFVMdhcUoM74qTCp/preview', 'drive')" class="inner-btn"><i class="fa-solid fa-earth-asia" style="color:#1e88e5;"></i>Geography</button>
+            <button onclick="launchAppFile('https://drive.google.com/file/d/1391ZXxtIfgbKVxHUWZ-A4ZGusChc3HZg/preview', 'drive')" class="inner-btn"><i class="fa-solid fa-flask" style="color:#43a047;"></i>Science & Tech</button>
+            <button onclick="launchAppFile('https://drive.google.com/file/d/14EoiD_tFnKLADYE6pwMVMvmCusurr5Zv/preview', 'drive')" class="inner-btn"><i class="fa-solid fa-scale-balanced" style="color:#fb8c00;"></i>Constitution</button>
+        </div>
+    </div></div>
+
+    <!-- 3. Social -->
+    <div id="socialM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('socialM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-share-nodes"></i> Connect with Me</h2>
+        <div class="inner-grid">
+            <a href="https://www.linkedin.com/in/narendra-mahi" target="_blank" class="inner-btn"><i class="fa-brands fa-linkedin" style="color:#0077b5;"></i>LinkedIn</a>
+            <a href="https://www.facebook.com/profile.php?id=100008720538562" target="_blank" class="inner-btn"><i class="fa-brands fa-facebook" style="color:#1877f2;"></i>Facebook</a>
+            <a href="https://www.instagram.com/narendramahi7736/" target="_blank" class="inner-btn"><i class="fa-brands fa-instagram" style="color:#e1306c;"></i>Instagram</a>
+            <a href="https://www.youtube.com/" target="_blank" class="inner-btn"><i class="fa-brands fa-youtube" style="color:#ff0000;"></i>YouTube</a>
+        </div>
+    </div></div>
+
+    <!-- 5. Entertainment -->
+    <div id="entM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('entM')">&times;</span>
+        <h2 class="modal-title"><i class="fa-solid fa-clapperboard"></i> Entertainment Hub</h2>
+        
+        <div class="inner-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 25px;">
+            <button onclick="showEnt('music-box')" class="inner-btn" style="padding:10px;"><i class="fa-solid fa-music" style="color:#ff4500; font-size:25px;"></i>Music</button>
+            <button onclick="showEnt('reel-box')" class="inner-btn" style="padding:10px;"><i class="fa-solid fa-film" style="color:#8e44ad; font-size:25px;"></i>Reels</button>
+            <button onclick="showEnt('image-box')" class="inner-btn" style="padding:10px;"><i class="fa-solid fa-image" style="color:#2e7d32; font-size:25px;"></i>Images</button>
+            <button onclick="showEnt('shorts-box')" class="inner-btn" style="padding:10px;"><i class="fa-brands fa-facebook" style="color:#1877f2; font-size:25px;"></i>FB Links</button>
+            <button onclick="showEnt('yt-box')" class="inner-btn" style="padding:10px;"><i class="fa-brands fa-youtube" style="color:#d50000; font-size:25px;"></i>YouTube</button>
+            <button onclick="showEnt('insta-box')" class="inner-btn" style="padding:10px;"><i class="fa-brands fa-instagram" style="color:#e1306c; font-size:25px;"></i>Insta Play</button>
+        </div>
+        
+        <div id="music-box" class="sub-box"><div id="music-list"></div></div>
+        <div id="reel-box" class="sub-box"><div class="reel-grid" id="rGrid"></div></div>
+        <div id="image-box" class="sub-box"><div class="photo-grid" id="iGrid"></div></div>
+        
+        <!-- Insta Play Links -->
+        <div id="insta-box" class="sub-box">
+            <h3 style="text-align:center; color:#e1306c; position:relative; z-index:9500;">Instagram Reels</h3>
+            <div class="yt-grid">
+                <a href="https://www.instagram.com/supriya_____here25" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=SH&background=random&color=fff"><span>✨ Supriya Here</span></a>
+                <a href="https://www.instagram.com/shravani.life/" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=SL&background=random&color=fff"><span>🌸 Shravani Life</span></a>
+                <a href="https://www.instagram.com/itsoksimmi/" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=IS&background=random&color=fff"><span>💫 Its Ok Simmi</span></a>
+                <a href="https://www.instagram.com/airakhanofficial0" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=AK&background=random&color=fff"><span>💖 Aira Khan</span></a>
+                <a href="https://www.instagram.com/officialiamshanu" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=OS&background=random&color=fff"><span>🌟 Official Shanu</span></a>
+                <a href="https://www.instagram.com/jyotisangwan_official/" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=JS&background=random&color=fff"><span>👑 Jyoti Sangwan</span></a>
+                <a href="https://www.instagram.com/diparoy_1/" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=DR&background=random&color=fff"><span>🌺 Dipa Roy</span></a>
+                <a href="https://www.instagram.com/im.piya/" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=IP&background=random&color=fff"><span>🦋 Im Piya</span></a>
+                <a href="https://www.instagram.com/alisha_sharma.16/" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=AS&background=random&color=fff"><span>🎀 Alisha Sharma</span></a>
+                <a href="https://www.instagram.com/official_mehakbhatnagar/" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=MB&background=random&color=fff"><span>💋 Mehak Bhat.</span></a>
+                <a href="https://www.instagram.com/aanya_kapoorrrr/" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=AK&background=random&color=fff"><span>🌻 Aanya Kapoor</span></a>
+                <a href="https://www.instagram.com/shanaya_0865" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=S&background=random&color=fff"><span>🍀 Shanaya</span></a>
+                <a href="https://www.instagram.com/sonakshi_world_/" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=SW&background=random&color=fff"><span>👸 Sonakshi World</span></a>
+                <a href="https://www.instagram.com/raniactres88/" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RA&background=random&color=fff"><span>🎭 Rani Actres</span></a>
+                <a href="https://www.instagram.com/monika9594_/" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=M&background=random&color=fff"><span>💎 Monika</span></a>
+                <a href="https://www.instagram.com/pehnavaa_by_rupam/" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=PR&background=random&color=fff"><span>👗 Pehnavaa R.</span></a>
+                <a href="https://www.instagram.com/roshni.singhaniya33" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=RS&background=random&color=fff"><span>⭐ Roshni Singh</span></a>
+                <a href="https://www.instagram.com/riyajihere" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=RH&background=random&color=fff"><span>🌷 Riya Ji Here</span></a>
+                <a href="https://www.instagram.com/kiyara.sharma04/" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=KS&background=random&color=fff"><span>🍓 Kiyara Sharma</span></a>
+                <a href="https://www.instagram.com/anayaa_12x/" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=A&background=random&color=fff"><span>🎈 Anayaa 12x</span></a>
+                <a href="https://www.instagram.com/vedashriiii/" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=V&background=random&color=fff"><span>🌟 Vedashriiii</span></a>
+                <a href="https://www.instagram.com/aaliya__x4/" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=A&background=random&color=fff"><span>🤍 Aaliya x4</span></a>
+                <a href="https://www.instagram.com/niyati_baisla90/" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=NB&background=random&color=fff"><span>🔥 Niyati Baisla</span></a>
+                <a href="https://www.instagram.com/kirtika_khurana00" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=KK&background=random&color=fff"><span>🎵 Kirtika K.</span></a>
+                <a href="https://www.instagram.com/rojee5029" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=R&background=random&color=fff"><span>🌹 Rojee 5029</span></a>
+                <a href="https://www.instagram.com/pari__050_/" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=P&background=random&color=fff"><span>🧚 Pari</span></a>
+                <a href="https://www.instagram.com/siimran_tiiwarii/" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=ST&background=random&color=fff"><span>💖 Simran Tiwari</span></a>
+                <a href="https://www.instagram.com/khushiverrma_17" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=KV&background=random&color=fff"><span>😊 Khushi Verma</span></a>
+                <a href="https://www.instagram.com/vibhu.neha" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=VN&background=random&color=fff"><span>💫 Vibhu Neha</span></a>
+                <a href="https://www.instagram.com/sizzling_babe2.0" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SB&background=random&color=fff"><span>🔥 Sizzling Babe</span></a>
+                <a href="https://www.instagram.com/somyaai/" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=S&background=random&color=fff"><span>🎨 Somyaai</span></a>
+                <a href="https://www.instagram.com/unikaa_18" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=U&background=random&color=fff"><span>✨ Unikaa 18</span></a>
+                <a href="https://www.instagram.com/shaila.holic/" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=SH&background=random&color=fff"><span>🎶 Shaila Holic</span></a>
+            </div>
+        </div>
+
+        <!-- FB Links -->
+        <div id="shorts-box" class="sub-box">
+            <h3 style="text-align:center; color:#1877f2; position:relative; z-index:9500;">Facebook Creators</h3>
+            <div class="yt-grid">
+                <!-- Priority / Requested -->
+                <a href="https://www.facebook.com/profile.php?id=100069753588539" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=F&background=random&color=fff"><span>🔥 FB Creator</span></a>
+                <a href="https://www.facebook.com/saks.hisharma244" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=SS&background=random&color=fff"><span>🌸 Sakshi Sharma</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61574901343460" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=F&background=random&color=fff"><span>✨ FB Model</span></a>
+                <a href="https://www.facebook.com/Ishitasharma26" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=IS&background=random&color=fff"><span>💖 Ishita Sharma</span></a>
+                <a href="https://www.facebook.com/RitishaaBhatt" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=RB&background=random&color=fff"><span>🌟 Ritisha Bhatt</span></a>
+                
+                <!-- Existing FB -->
+                <a href="https://www.facebook.com/profile.php?id=100064451363636" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=NV&background=random&color=fff"><span>💎 Neha Vlogs</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61591311672230" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=RD&background=random&color=fff"><span>🔥 Rahul Desh.</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61589914349566" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=KS&background=random&color=fff"><span>🌟 Kavya Singh</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61590484288068" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RV&background=random&color=fff"><span>✨ Ravi Verma</span></a>
+                <a href="https://www.facebook.com/shaileshbhai.shaileshbhai.58" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SB&background=random&color=fff"><span>👑 Shaileshbhai</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61591634983013" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=NR&background=random&color=fff"><span>🍀 Nisha Rajput</span></a>
+                <a href="https://www.facebook.com/saliniqveen" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=SQ&background=random&color=fff"><span>👸 Salini Qveen</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61561295662890" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=AF&background=random&color=fff"><span>🌺 Ankit Fitness</span></a>
+                <a href="https://www.facebook.com/Rzl.888" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RZ&background=random&color=fff"><span>💫 Rzl 888</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61582464945111" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=PD&background=random&color=fff"><span>🦋 Priya Dance</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61590264569120" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=ST&background=random&color=fff"><span>🌸 Sumit Tech</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61567940280859" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=AL&background=random&color=fff"><span>🎉 Aman Lifesty.</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61550911270517" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=JK&background=random&color=fff"><span>🎈 Jyoti Kitchen</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61590789418575" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=VG&background=random&color=fff"><span>🎸 Vicky Gamer</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61556884852965" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SB&background=random&color=fff"><span>🎨 Sonal Beauty</span></a>
+                <a href="https://www.facebook.com/profile.php?id=100094047290015" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=RM&background=random&color=fff"><span>🚀 Rahul Music</span></a>
+                <a href="https://www.facebook.com/missauraxofficial" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MA&background=random&color=fff"><span>💋 Miss Aurax</span></a>
+                <a href="https://www.facebook.com/profile.php?id=100064981717931" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=KT&background=random&color=fff"><span>🎵 Karan Travels</span></a>
+                <a href="https://www.facebook.com/rocky.bhai.82103" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RB&background=random&color=fff"><span>💪 Rocky Bhai</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61580061658528" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=AS&background=random&color=fff"><span>🌟 Ajay Singh</span></a>
+                <a href="https://www.facebook.com/wowmami2050" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=WM&background=random&color=fff"><span>😍 Wow Mami</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61565266460632" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=SF&background=random&color=fff"><span>💖 Swati Foodie</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61576463601405" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=GM&background=random&color=fff"><span>✨ Gaurav Motor</span></a>
+                <a href="https://www.facebook.com/Saravlog2945" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SV&background=random&color=fff"><span>📸 Sara Vlog</span></a>
+                <a href="https://www.facebook.com/pihu.tiwari.664189" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=PT&background=random&color=fff"><span>🌸 Pihu Tiwari</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61582111041586" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MA&background=random&color=fff"><span>🍀 Megha Art</span></a>
+                <a href="https://www.facebook.com/yashika.rajput.589831" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=YR&background=random&color=fff"><span>👸 Yashika Raj.</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61558236181834" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=RS&background=random&color=fff"><span>🎸 Rohan Shorts</span></a>
+                <a href="https://www.facebook.com/profile.php?id=61590614960987" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=KK&background=random&color=fff"><span>💎 Kajal Kumari</span></a>
+            </div>
+        </div>
+
+        <!-- YT Links -->
+        <div id="yt-box" class="sub-box">
+            <h3 style="text-align:center; color:#d50000; position:relative; z-index:9500;">YouTube Shorts</h3>
+            <div class="yt-grid">
+                <!-- TOP PRIORITY AS REQUESTED -->
+                <a href="https://youtube.com/@ziyasiddiquivlogs" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=ZS&background=random&color=fff"><span>🌟 Ziya Siddiqui</span></a>
+                <a href="https://youtube.com/@sumanmodi5274" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=SM&background=random&color=fff"><span>💫 Suman Modi</span></a>
+                <a href="https://youtube.com/@anjalibaliyan03" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=AB&background=random&color=fff"><span>✨ Anjali Baliyan</span></a>
+                <a href="https://youtube.com/@sapna3538" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=S&background=random&color=fff"><span>🌙 Sapna</span></a>
+                <a href="https://youtube.com/@angelrai" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=AR&background=random&color=fff"><span>💖 Angel Rai</span></a>
+                <a href="https://youtube.com/@rojee_das23" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=RD&background=random&color=fff"><span>🌺 Rojee Das</span></a>
+                <a href="https://youtube.com/@simonnn-o9x" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=S&background=random&color=fff"><span>⚡ Simonnn</span></a>
+                <a href="https://youtube.com/@prachityagivlogs" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=PT&background=random&color=fff"><span>📸 Prachi Tyagi</span></a>
+                <a href="https://youtube.com/@haryanvi_song." target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=HS&background=random&color=fff"><span>🎵 Haryanvi Song</span></a>
+                <a href="https://youtube.com/@monik.dancer-fp7ku" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=MD&background=random&color=fff"><span>💃 Monik Dancer</span></a>
+
+                <!-- NEW ADDED YT LINKS -->
+                <a href="https://youtube.com/@beautifulangels2722" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=BA&background=random&color=fff"><span>👼 Beaut. Angels</span></a>
+                <a href="https://youtube.com/@mscommetbaba" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MB&background=random&color=fff"><span>🔮 Commet Baba</span></a>
+
+                <a href="https://youtube.com/@roastexpress1" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=RE&background=random&color=fff"><span>🔥 Roast Exp.</span></a>
+                <a href="https://youtube.com/@sahilkcoment" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=SC&background=random&color=fff"><span>💬 Sahil Koment</span></a>
+                <a href="https://youtube.com/@girlz_unplugged" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=GU&background=random&color=fff"><span>🎸 Girlz Unplug</span></a>
+                <a href="https://youtube.com/@dakuashorts2.0" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=DS&background=random&color=fff"><span>🔫 Dakua Shorts</span></a>
+                <a href="https://youtube.com/@iamannupanchal7414" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=AP&background=random&color=fff"><span>🦋 Annu Panchal</span></a>
+                <a href="https://youtube.com/@hotaura0.1" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=HA&background=random&color=fff"><span>💋 Hot Aura</span></a>
+                <a href="https://youtube.com/@official_babita.90" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=OB&background=random&color=fff"><span>👑 Babita</span></a>
+                <a href="https://youtube.com/@sheetalpayaalofficial" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=SP&background=random&color=fff"><span>🌸 Sheetal Payal</span></a>
+                <a href="https://youtube.com/@homedanceacdamy" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=HD&background=random&color=fff"><span>🩰 Home Dance</span></a>
+                <a href="https://youtube.com/@haryanvimusic19" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=HM&background=random&color=fff"><span>🎧 Haryanvi Mus.</span></a>
+                <a href="https://youtube.com/@tradinggprince" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=TP&background=random&color=fff"><span>📈 Trading Prince</span></a>
+                <a href="https://youtube.com/@dipikaranavlog" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=DR&background=random&color=fff"><span>🌻 Dipika Rana</span></a>
+                <a href="https://youtube.com/@r-f-shoes-store" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=RF&background=random&color=fff"><span>👟 R-F Shoes</span></a>
+                <a href="https://youtube.com/@satishpriyarajput_offcial.4" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=SP&background=random&color=fff"><span>❤️ Satish Priya</span></a>
+                <a href="https://youtube.com/@ktfashionstore" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=KT&background=random&color=fff"><span>👗 KT Fashion</span></a>
+                <a href="https://youtube.com/@payal_rani2" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=PR&background=random&color=fff"><span>💎 Payal Rani</span></a>
+                <a href="https://youtube.com/@fullentertainmentforyou" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=FE&background=random&color=fff"><span>🍿 Full Entertain</span></a>
+                <a href="https://youtube.com/@trendingvideo0233" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=TV&background=random&color=fff"><span>🚀 Trend Video</span></a>
+                <a href="https://youtube.com/@jiyarajvanshidance" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=JR&background=random&color=fff"><span>💃 Jiya Rajvanshi</span></a>
+                <a href="https://youtube.com/@ms_fashion_store" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MS&background=random&color=fff"><span>🛍️ MS Fashion</span></a>
+                <a href="https://youtube.com/@ringtonexseries" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=RX&background=random&color=fff"><span>🎶 Ringtone X</span></a>
+                <a href="https://youtube.com/@girlzunplugged2.0" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=G2&background=random&color=fff"><span>🎸 Girlz 2.0</span></a>
+
+                <!-- OTHER EXISTING -->
+                <a href="https://youtube.com/@w2shorts" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=WS&background=random&color=fff"><span>🔥 W2 Shorts</span></a>
+                <a href="https://youtube.com/@vedashriii" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=VE&background=random&color=fff"><span>🌺 Vedashriii</span></a>
+                <a href="https://youtube.com/@theviral-r7s" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=TR&background=random&color=fff"><span>🚀 Viral R7s</span></a>
+                <a href="https://youtube.com/@simiyadavsimran" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=SY&background=random&color=fff"><span>🦋 Simi Yadav</span></a>
+                <a href="https://youtube.com/@smilee_doll_aishh" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=SA&background=random&color=fff"><span>🌸 Smilee Doll</span></a>
+                <a href="https://youtube.com/@artishortsvlogs" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=AS&background=random&color=fff"><span>🎭 Arti Shorts</span></a>
+                <a href="https://youtube.com/@hemachoudhary9868" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=HC&background=random&color=fff"><span>🌻 Hema Ch.</span></a>
+                <a href="https://youtube.com/@geetabhosale_13" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=GB&background=random&color=fff"><span>👑 Geeta Bhosale</span></a>
+                <a href="https://youtube.com/@khushi_paliwal" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=KP&background=random&color=fff"><span>😊 Khushi Pal.</span></a>
+                <a href="https://youtube.com/@khushivermaofficial977" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=KV&background=random&color=fff"><span>🎈 Khushi V.</span></a>
+                <a href="https://youtube.com/@divyasharmashorts09" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=DS&background=random&color=fff"><span>💖 Divya Sh.</span></a>
+                <a href="https://youtube.com/@ayuzin" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=A&background=random&color=fff"><span>🔥 Ayuzin</span></a>
+                <a href="https://youtube.com/@meenuprajapatiji" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MP&background=random&color=fff"><span>🕊️ Meenu Praj.</span></a>
+                <a href="https://youtube.com/@myragoswamiofficial1811" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=MG&background=random&color=fff"><span>🌟 Myra G.</span></a>
+                <a href="https://youtube.com/@singh79768" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=S7&background=random&color=fff"><span>🦁 Singh 79768</span></a>
+                <a href="https://youtube.com/@pk_creator22" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=PC&background=random&color=fff"><span>🎬 PK Creator</span></a>
+                <a href="https://youtube.com/@reshma_choudharyyy" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=RC&background=random&color=fff"><span>🌷 Reshma Ch.</span></a>
+                <a href="https://youtube.com/@mkfunnyread" target="_blank" class="yt-btn yt-color-2"><img src="https://ui-avatars.com/api/?name=MR&background=random&color=fff"><span>😂 MK Funny</span></a>
+                <a href="https://youtube.com/@ai05cinematic" target="_blank" class="yt-btn yt-color-3"><img src="https://ui-avatars.com/api/?name=AC&background=random&color=fff"><span>🎥 AI 05 Cinema</span></a>
+                <a href="https://youtube.com/@monirpayel295" target="_blank" class="yt-btn yt-color-4"><img src="https://ui-avatars.com/api/?name=MP&background=random&color=fff"><span>💎 Monir Payel</span></a>
+                <a href="https://youtube.com/@vanshikat44" target="_blank" class="yt-btn yt-color-5"><img src="https://ui-avatars.com/api/?name=VT&background=random&color=fff"><span>🎀 Vanshika T</span></a>
+                <a href="https://youtube.com/@manav_comments_01" target="_blank" class="yt-btn yt-color-1"><img src="https://ui-avatars.com/api/?name=MC&background=random&color=fff"><span>💬 Manav Comm.</span></a>
+            </div>
+        </div>
+    </div></div>
+
+    <!-- 4. Calculator Full Screen View (Colorul Mobile Style & Works Same in Laptop) -->
+    <div id="calcM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('calcM')" style="top: 20px;">&times;</span>
+        <div class="calc-wrapper">
+            <div class="calc-display">
+                <div id="calc-expr"></div>
+                <div id="calc-res">0</div>
+            </div>
+            <div class="calc-grid">
+                <button class="calc-btn clear" onclick="calcPress('C')">AC</button>
+                <button class="calc-btn adv" onclick="calcPress('sq')">x²</button>
+                <button class="calc-btn adv" onclick="calcPress('cu')">x³</button>
+                <button class="calc-btn op" onclick="calcPress('/')"><i class="fa-solid fa-divide"></i></button>
+                <button class="calc-btn" onclick="calcPress('7')">7</button>
+                <button class="calc-btn" onclick="calcPress('8')">8</button>
+                <button class="calc-btn" onclick="calcPress('9')">9</button>
+                <button class="calc-btn op" onclick="calcPress('*')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="calc-btn" onclick="calcPress('4')">4</button>
+                <button class="calc-btn" onclick="calcPress('5')">5</button>
+                <button class="calc-btn" onclick="calcPress('6')">6</button>
+                <button class="calc-btn op" onclick="calcPress('-')"><i class="fa-solid fa-minus"></i></button>
+                <button class="calc-btn" onclick="calcPress('1')">1</button>
+                <button class="calc-btn" onclick="calcPress('2')">2</button>
+                <button class="calc-btn" onclick="calcPress('3')">3</button>
+                <button class="calc-btn op" onclick="calcPress('+')"><i class="fa-solid fa-plus"></i></button>
+                <button class="calc-btn clear" onclick="calcPress('Del')"><i class="fa-solid fa-delete-left"></i></button>
+                <button class="calc-btn" onclick="calcPress('0')">0</button>
+                <button class="calc-btn" onclick="calcPress('.')">.</button>
+                <button class="calc-btn eq" onclick="calcPress('=')"><i class="fa-solid fa-equals"></i></button>
+            </div>
+        </div>
+    </div></div>
+
+    <!-- 6. Kundali (Genuine Details Online Style) -->
+    <div id="astroM" class="modal"><div class="modal-content">
+        <span class="close-btn" onclick="closeM('astroM')">&times;</span>
+        <h2 class="modal-title" style="color: #ff8f00; border-bottom-color: #ff8f00;"><i class="fa-solid fa-om"></i> Online Kundali Darshan</h2>
+        
+        <div class="astro-wrapper">
+            <label style="font-weight:700; color: #333; font-size: 14px;">Pura Naam (Full Name):</label>
+            <input type="text" id="astroName" class="astro-input" placeholder="e.g. Narendra Mahi">
+            
+            <label style="font-weight:700; color: #333; font-size: 14px;">Janam Din (Date of Birth):</label>
+            <input type="date" id="astroDOB" class="astro-input">
+
+            <label style="font-weight:700; color: #333; font-size: 14px;">Janam Samay (Time of Birth):</label>
+            <input type="time" id="astroTOB" class="astro-input">
+            
+            <label style="font-weight:700; color: #333; font-size: 14px;">Janam Sthan (Place of Birth):</label>
+            <input type="text" id="astroPlace" class="astro-input" placeholder="e.g. New Delhi">
+            
+            <button onclick="generateKundali()" class="inner-btn" style="width: 100%; background:#ff8f00; color: #fff; padding: 15px; font-size: 18px; border: none; font-family:'Poppins';"><i class="fa-solid fa-wand-magic-sparkles" style="color: #fff; font-size: 20px; margin-bottom: 5px;"></i> Generate Kundali</button>
+        </div>
+
+        <div id="astroResult" class="astro-result-box" style="max-width: 800px; margin-left: auto; margin-right: auto;"></div>
+    </div></div>
+
+    <script>
+        // STRICT ANTI PULL-TO-REFRESH
+        document.body.style.overscrollBehavior = 'none';
+
+        let appHistoryTracker = [];
+        let imagesArray = [];
+        let reelsArray = [];
+        let currentLightboxArray = [];
+        let currentLightboxIndex = 0;
+        let currentMediaType = '';
+        
+        // Cache object to stop heavy API calls & lag
+        let repoDataCache = {}; 
+
+        let touchStartY = 0;
+        document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchmove', e => {
+            const touchY = e.touches[0].clientY;
+            if (touchY - touchStartY > 0) { 
+                const scrollable = e.target.closest('.modal-content, #appFullscreenViewer, .sub-box, .yt-grid, .astro-result-box');
+                if (!scrollable || scrollable.scrollTop <= 0) { if (e.cancelable) e.preventDefault(); }
+            }
+        }, { passive: false });
+
+        function openM(id) { 
+            document.getElementById(id).style.display = "block"; 
+            if (!appHistoryTracker.includes(id)) {
+                appHistoryTracker.push(id);
+                window.history.pushState({viewId: id}, "");
+            }
+            window.scrollTo(0, 0);
+        }
+        
+        function closeM(id, bypassHistory = false) { 
+            document.getElementById(id).style.display = "none"; 
+            if(!bypassHistory) { appHistoryTracker = appHistoryTracker.filter(item => item !== id); }
+        }
+
+        // SMOOTH DOCUMENT OPENING (webintoapp crash fix)
+        function launchAppFile(filePath, fileType) {
+            const computedFileUrl = filePath.startsWith('http') ? filePath : (window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1) + filePath);
+            let finalEmbedUrl = "";
+            
+            if (fileType === 'pdf') {
+                finalEmbedUrl = "https://docs.google.com/viewer?url=" + encodeURIComponent(computedFileUrl) + "&embedded=true";
+            } else if (fileType === 'doc' || fileType === 'excel') {
+                finalEmbedUrl = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(computedFileUrl);
+            } else { finalEmbedUrl = computedFileUrl; }
+            
+            document.getElementById('directLinkBtn').href = computedFileUrl;
+            document.getElementById('appViewerFrameWrapper').innerHTML = `<iframe src="${finalEmbedUrl}" loading="lazy" style="width:100%; height:100%; border:none; background:#fff;"></iframe>`;
+            document.getElementById('appFullscreenViewer').style.display = "block";
+            
+            if (!appHistoryTracker.includes('appFullscreenViewer')) {
+                appHistoryTracker.push('appFullscreenViewer');
+                window.history.pushState({viewId: 'appFullscreenViewer'}, "");
+            }
+        }
+
+        function closeAppFile() {
+            document.getElementById('appFullscreenViewer').style.display = "none";
+            document.getElementById('appViewerFrameWrapper').innerHTML = "";
+            appHistoryTracker = appHistoryTracker.filter(item => item !== 'appFullscreenViewer');
+        }
+
+        function openLightbox(type, index) {
+            document.getElementById('mediaLightbox').style.display = "flex";
+            currentMediaType = type; currentLightboxIndex = index;
+            currentLightboxArray = (type === 'image') ? imagesArray : reelsArray;
+            
+            if (!appHistoryTracker.includes('mediaLightbox')) {
+                appHistoryTracker.push('mediaLightbox');
+                window.history.pushState({viewId: 'mediaLightbox'}, "");
+            }
+            renderLightboxMedia();
+        }
+
+        function closeLightbox() {
+            document.getElementById('mediaLightbox').style.display = "none";
+            document.getElementById('lightboxContent').innerHTML = ""; 
+            appHistoryTracker = appHistoryTracker.filter(item => item !== 'mediaLightbox');
+        }
+
+        function navLightbox(direction) {
+            currentLightboxIndex += direction;
+            if (currentLightboxIndex < 0) currentLightboxIndex = currentLightboxArray.length - 1;
+            if (currentLightboxIndex >= currentLightboxArray.length) currentLightboxIndex = 0;
+            renderLightboxMedia();
+        }
+
+        function renderLightboxMedia() {
+            const contentBox = document.getElementById('lightboxContent');
+            const mediaUrl = currentLightboxArray[currentLightboxIndex];
+            document.getElementById('lightboxCounter').innerText = `${currentLightboxIndex + 1} / ${currentLightboxArray.length}`;
+            
+            if (currentMediaType === 'reel') {
+                contentBox.innerHTML = `<video src="${mediaUrl}" controls autoplay preload="auto" style="width:100%; height:100%; object-fit:contain;"></video>`;
+            } else { contentBox.innerHTML = `<img src="${mediaUrl}">`; }
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (appHistoryTracker.length > 0) {
+                let activelyOpenView = appHistoryTracker.pop();
+                if (activelyOpenView === 'appFullscreenViewer') { closeAppFile(); }
+                else if (activelyOpenView === 'mediaLightbox') { closeLightbox(); }
+                else if (activelyOpenView.endsWith('-box')) { document.getElementById(activelyOpenView).style.display = "none"; }
+                else { closeM(activelyOpenView, true); }
+                window.history.pushState(null, null, window.location.pathname);
+            }
+        });
+        window.history.pushState(null, null, window.location.pathname);
+
+        // SMART FETCH WITH CACHING (SOLVED 45s DELAY & APP LAG)
+        function showEnt(id) {
+            document.querySelectorAll('.sub-box').forEach(el => el.style.display = "none");
+            document.getElementById(id).style.display = "block";
+
+            if (!appHistoryTracker.includes(id)) {
+                appHistoryTracker.push(id);
+                window.history.pushState({viewId: id}, "");
+            }
+
+            if(id === 'image-box' && document.getElementById('iGrid').innerHTML === "") {
+                fetchMediaData("https://api.github.com/repos/narendramahi007-cloud/my-media12/contents/Images", 'image');
+            }
+            if(id === 'music-box' && document.getElementById('music-list').innerHTML === "") {
+                fetchMediaData("https://api.github.com/repos/narendramahi007-cloud/my-media12/contents/Music", 'music');
+            }
+            if(id === 'reel-box' && document.getElementById('rGrid').innerHTML === "") {
+                fetchMediaData("https://api.github.com/repos/narendramahi007-cloud/my-media/contents/Reels", 'reel');
+            }
+        }
+
+        function fetchMediaData(url, type) {
+            if(repoDataCache[url]) { buildMediaUI(repoDataCache[url], type); return; }
+            fetch(url).then(res => res.json()).then(data => {
+                if(Array.isArray(data)) {
+                    repoDataCache[url] = data;
+                    buildMediaUI(data, type);
+                }
+            }).catch(e => console.log("Network wait or cache error."));
+        }
+
+        function buildMediaUI(data, type) {
+            let chunkHtml = "";
+            data.forEach(file => {
+                if(type === 'image' && file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                    imagesArray.push(file.download_url);
+                    chunkHtml += `<div class="photo-card" onclick="openLightbox('image', ${imagesArray.length - 1})"><img src="${file.download_url}" loading="lazy"></div>`;
+                } 
+                else if(type === 'music' && file.name.endsWith('.mp3')) {
+                    chunkHtml += `<div class="audio-item"><i class="fa-solid fa-play-circle" style="color:#ff4500; font-size:25px;"></i><span>${file.name.replace('.mp3', '')}</span><audio controls preload="none" onplay="stopOtherMedia(this)"><source src="${file.download_url}" type="audio/mpeg"></audio></div>`;
+                } 
+                else if(type === 'reel' && file.name.endsWith('.mp4')) {
+                    reelsArray.push(file.download_url);
+                    // FIXED: preload="none" and poster="my-photos.jpg" so it never freezes Webintoapp when loading!
+                    chunkHtml += `<div class="reel-card" style="background:#111;" onclick="openLightbox('reel', ${reelsArray.length - 1})"><video src="${file.download_url}" preload="none" poster="my-photos.jpg"></video><i class="fa-solid fa-circle-play play-overlay"></i></div>`;
+                }
+            });
+            
+            if(type === 'image') document.getElementById('iGrid').innerHTML += chunkHtml;
+            if(type === 'music') document.getElementById('music-list').innerHTML += chunkHtml;
+            if(type === 'reel') document.getElementById('rGrid').innerHTML += chunkHtml;
+        }
+
+        function stopOtherMedia(current) {
+            document.querySelectorAll('audio, video').forEach(el => { if(el !== current) { el.pause(); el.currentTime = 0; } });
+        }
+        
+        // Calculator Logic
+        let currentExpr = "", isEvaluated = false;
+        function calcPress(val) {
+            if (val === '=') {
+                try {
+                    let ans = eval(currentExpr.replace(/×/g, '*').replace(/÷/g, '/')) || 0;
+                    document.getElementById('calc-expr').innerText = currentExpr + " =";
+                    document.getElementById('calc-res').innerText = ans;
+                    currentExpr = ans.toString(); isEvaluated = true;
+                } catch(e) { document.getElementById('calc-res').innerText = "Error"; currentExpr = ""; }
+            } else if (val === 'C') { currentExpr = ""; document.getElementById('calc-expr').innerText = ""; document.getElementById('calc-res').innerText = "0";
+            } else if (val === 'Del') {
+                if(isEvaluated) { currentExpr = ""; isEvaluated = false; }
+                currentExpr = currentExpr.slice(0, -1); document.getElementById('calc-res').innerText = currentExpr || "0";
+            } else if (val === 'sq' || val === 'cu') {
+                if(currentExpr) {
+                    try {
+                        let ans = Math.pow(eval(currentExpr.replace(/×/g, '*').replace(/÷/g, '/')), val==='sq'?2:3);
+                        document.getElementById('calc-expr').innerText = `(${currentExpr})${val==='sq'?'²':'³'} =`;
+                        currentExpr = ans.toString(); document.getElementById('calc-res').innerText = currentExpr; isEvaluated = true;
+                    } catch(e) { document.getElementById('calc-res').innerText = "Error"; currentExpr = ""; }
+                }
+            } else {
+                if(isEvaluated && !['+','-','*','/','×','÷'].includes(val)) currentExpr = "";
+                isEvaluated = false; currentExpr += val;
+                document.getElementById('calc-expr').innerText = currentExpr; document.getElementById('calc-res').innerText = currentExpr;
+            }
+        }
+
+        // --- FULL GENUINE KUNDALI LOGIC (ADVANCED 10+ PARAMS WITH DESCRIPTIONS) ---
+        const rashiDetails = {
+            "Mesh (Aries)": { lord: "Mangal (Mars)", tatva: "Agni (Fire)", yoni: "Ashwa", varna: "Kshatriya", luckyColor: "Lal (Red)", luckyStone: "Moonga (Coral)", desc: "Aap urjawan, sahasi aur naitratva karne wale vyakti hain. Aapko nayi chuneutiyan pasand hain.", body: "Gathila sharir, thodi height lambi (approx 5'7 - 5'10) aur mathe par halka tej hota hai. Ankhon me chamak hoti hai." },
+            "Vrishabha (Taurus)": { lord: "Shukra (Venus)", tatva: "Prithvi (Earth)", yoni: "Gaja", varna: "Vaishya", luckyColor: "Safed (White)", luckyStone: "Heera (Diamond)", desc: "Aap vyavharik, shant aur dhairyavan hain. Kala aur saundarya ki taraf aapka jhukaav adhik hota hai.", body: "Aapka sharir bhara hua, kandhe chaude aur twacha aakarshak hoti hai. Height samanya (5'5 - 5'8) hoti hai." },
+            "Mithun (Gemini)": { lord: "Budh (Mercury)", tatva: "Vayu (Air)", yoni: "Marjar", varna: "Shudra", luckyColor: "Hara (Green)", luckyStone: "Panna (Emerald)", desc: "Aapki buddhi bahut tez hai. Aap communication aur naye vishayon ko seekhne mein mahir hain.", body: "Aap patle, furteele aur akarshak hote hain. Haath pair lambe hote hain aur height average hoti hai." },
+            "Kark (Cancer)": { lord: "Chandra (Moon)", tatva: "Jal (Water)", yoni: "Marjar", varna: "Brahmin", luckyColor: "Safed/Dudhiya", luckyStone: "Moti (Pearl)", desc: "Aap bhavuk aur parivar ko mahatva dene wale hain. Aapki kalpana shakti bahut mazboot hoti hai.", body: "Gol chehra, bhavpurna ankhein aur vajan thoda jaldi badhne ki pravritti hoti hai. Height moderate rahti hai." },
+            "Simha (Leo)": { lord: "Surya (Sun)", tatva: "Agni (Fire)", yoni: "Mushaka", varna: "Kshatriya", luckyColor: "Sunehra (Golden)", luckyStone: "Manikya (Ruby)", desc: "Aap atmavishwasi, raajsi swabhav wale aur apne kshetra mein chamakne wale vyakti hain.", body: "Chaudha seena, majboot haddiyan aur shareerik gathan sher jaisa royal hota hai. Height achhi hoti hai." },
+            "Kanya (Virgo)": { lord: "Budh (Mercury)", tatva: "Prithvi (Earth)", yoni: "Gau", varna: "Vaishya", luckyColor: "Hara (Green)", luckyStone: "Panna (Emerald)", desc: "Aap har kaam ko perfection ke sath karte hain. Aapki vishleshan (analytical) kshamta gajab ki hai.", body: "Shant chhavi, chehre par yuvawastha ka jhalak aur sharir dubla-patla kintu svasth hota hai." },
+            "Tula (Libra)": { lord: "Shukra (Venus)", tatva: "Vayu (Air)", yoni: "Vyaghra", varna: "Shudra", luckyColor: "Gulabi (Pink)", luckyStone: "Heera/Opal", desc: "Aap santulan pasand karte hain. Nyay aur kala ke prati aapka vishesh akarshan rahta hai.", body: "Muskurata hua chehra, aakarshak hoth aur sharir ekdam proportionate (santulit) hota hai." },
+            "Vrishchik (Scorpio)": { lord: "Mangal (Mars)", tatva: "Jal (Water)", yoni: "Mrig", varna: "Brahmin", luckyColor: "Gehra Lal (Dark Red)", luckyStone: "Moonga (Coral)", desc: "Aap rahasyamayi aur dridh nischayi hain. Ek baar jo soch liya, use pura karke chhodte hain.", body: "Aankhein teekhi aur rahasyamayi hoti hain. Sharir kathor, chust aur aakarshak hota hai." },
+            "Dhanu (Sagittarius)": { lord: "Guru (Jupiter)", tatva: "Agni (Fire)", yoni: "Shwan", varna: "Kshatriya", luckyColor: "Peela (Yellow)", luckyStone: "Pukhraj (Yellow Sapphire)", desc: "Aap aashawadi, svatantra aur gyan prapt karne ke ichhuk rahte hain.", body: "Lambi height, chaude kandhe aur hamesha ek energy se bhara hua chal-dhal hota hai." },
+            "Makar (Capricorn)": { lord: "Shani (Saturn)", tatva: "Prithvi (Earth)", yoni: "Vanar", varna: "Vaishya", luckyColor: "Kala/Neela", luckyStone: "Neelam (Blue Sapphire)", desc: "Aap bahut mehnati, anushasit aur zimmedar vyakti hain. Dheere-dheere safalta prapt karte hain.", body: "Sharir me dridhta, chehre par gambhirta aur patli physique. Kad average ya lamba hota hai." },
+            "Kumbh (Aquarius)": { lord: "Shani (Saturn)", tatva: "Vayu (Air)", yoni: "Simha", varna: "Shudra", luckyColor: "Neela (Blue)", luckyStone: "Neelam (Blue Sapphire)", desc: "Aapki soch aage ki hoti hai. Samaj aur naye scientific vicharon me aap ruchi rakhte hain.", body: "Lambe hath aur pair, chehre par gehri soch aur anokha aakarshan hota hai. Height achhi hoti hai." },
+            "Meen (Pisces)": { lord: "Guru (Jupiter)", tatva: "Jal (Water)", yoni: "Gaja", varna: "Brahmin", luckyColor: "Peela (Yellow)", luckyStone: "Pukhraj (Yellow Sapphire)", desc: "Aap aam taur par shant, dayalu aur adhyatmik swabhav ke dhani hote hain.", body: "Komal aur mulayam tvacha, pyaari ankhein aur height aam taur par choti se madhyam hoti hai." }
+        };
+
+        const marriagePredictions = [
+            "Aapka vivahik jeevan bahut hi prem aur samanjasya (harmony) se bhara rahega. Aapka jeevan sathi aapko hamesha support karne wala aur samajhdar vyakti hoga, jo har kadam par sath dega.",
+            "Vivah ke baad aapke bhagya me vriddhi hogi. Aapka partner aapse bahut pyaar karne wala hoga, halanki shuruati samay me thoda samanjasya bithane me samay lag sakta hai, par baad me rishta majboot hoga.",
+            "Aapke jeevan sathi ka swabhav kafi akarshak aur atmavishwasi hoga. Shadi (Marriage) ke baad aapke carrier me nayi unchaiyan aayengi aur ek romantic jeevan ki shuruaat hogi.",
+            "Aapka dampatya jeevan shant aur dharmik pravritti ka hoga. Parivar ke sath milkar chalne wala sathi milega. Aap dono ke beech gehra vishwas aur adarshwadi prem rahega."
+        ];
+
+        const careerPredictions = [
+            "Aapke grah darshate hain ki aapke liye IT, engineering, software, ya technical line sabse jyada labhkari hogi. Business me utar-chadhav aayega par 28 varsh ki aayu ke baad bhari safalta ka yog hai.",
+            "Aapke andar ek behtareen manager aur neta banne ke gun hain. Sarkari naukri, prashasan (Administration) ya banking me try karna aapke liye bohot labhdayak ho sakta hai. Mehnat apko shikar par le jayegi.",
+            "Kala (Arts), Media, YouTube, acting ya swatantra vyapar me aap chamkenge. Aapki creativity hi aapki sabse badi takat hai. Kafi dhansampatti ikattha karne ke majboot grah yog ban rahe hain.",
+            "Aapko videsh yatra aur multi-national company (MNC) me achhi safalta milne ke sanket hain. Trading, finance ya kanoon ke kshetra me bhi aap apna carrier safaltapurvak bana sakte hain."
+        ];
+
+        const labhHaaniPredictions = [
+            "Jeevan Labh Haani: Aapke jeevan me dhan ka labh achanak hoga, vishesh kar aapke purvajo ke ashirwad ya investments se. Haani se bachne ke liye gusse aur jaldbaazi me nirnay lene se bachein.",
+            "Jeevan Labh Haani: Videsh yatra ya lambi yatrao se aapko bada labh prapt hoga. Kisi bhi anjaan vyakti par jaldi bharosa karne se aapko arthik haani ho sakti hai, isliye satark rahein.",
+            "Jeevan Labh Haani: Aap mehnat ke bal par jeevan me bohot kuch paenge. Property aur zameen me invest karne se labh milega. Lekin share market me bina soche invest karne se dhokha/haani mil sakti hai.",
+            "Jeevan Labh Haani: Parivar aur mitron se sahyog me labh prapt hoga. Kintu apne swasthya ki andekhi karne se physically aur mentally haani pahunch sakti hai. Yoga aur dhyan awashya karein."
+        ];
+
+        const interestsPredictions = [
+            "Aapko nayi jagah ghoomna, nayi technology seekhna, aur rahasyamayi kitabein padhna bahut pasand hai. Sangeet aur kala me bhi gahri ruchi rakhte hain.",
+            "Sports, fitness, aur apne doston ke sath samay bitana aapka shauk hai. Leadership wale kamo me aapki ruchi jyada rahti hai aur hamesha kuch naya karne ki sochte hain.",
+            "Aapko spiritual (adhyatmik) aur dharmik chijon me, dhyan (meditation) karne me aur dusro ki madad karne me anand milta hai. Sangeet sunna bhi aapko shanti deta hai.",
+            "Aapka interest nayi devices, gaming, online surfing aur dosto ke sath discussions me jyada rahta hai. Koi bhi creative project ho, usme aap man lagakar kaam karte hain."
+        ];
+
+        const gunPredictions = [
+            "Gun (Qualities): Aapke andar adbhut dhairya aur sahas hai. Kisi bhi musibat me ghabrate nahi hain. Sachai bolna aur imandari aapka sabse bada gun hai.",
+            "Gun (Qualities): Aapka networking skills aur logon se bat karne ka tarika adbhut hai. Ek baar jo zimmedari lete hain, use pura zarur karte hain. Aap ek achhe shrota (listener) bhi hain.",
+            "Gun (Qualities): Apne lakshya ke prati puri lagan, dridh nishchay aur mehnati swabhav. Aap hamesha dusro ki madat ke liye aage aate hain. Dayalu hriday aapko sabka priya banata hai.",
+            "Gun (Qualities): Tez dimag, tez faisle lene ki shamata aur vishleshan karne (analytical) ka behad khubsurat tarika. Aapki yaddasht kafi achhi hoti hai."
+        ];
+
+        function getKundaliRashi(name) {
+            let n = name.toUpperCase().trim();
+            if(!n) return "Mesh (Aries)";
+            let f2 = n.substring(0,2), f1 = n.substring(0,1);
+            if(["CH","LA","LI","LU","LE","LO","A"].includes(f2) || ["A","L"].includes(f1)) return "Mesh (Aries)";
+            if(["I","U","E","O","WA","WI","WU","WE","WO"].includes(f2) || ["V","W","U"].includes(f1)) return "Vrishabha (Taurus)";
+            if(["KA","KI","KU","GH","CH","KE","KO","HA"].includes(f2) || ["K","H"].includes(f1)) return "Mithun (Gemini)";
+            if(["HI","HU","HE","HO","DA","DI","DU","DE","DO"].includes(f2) || ["D"].includes(f1)) return "Kark (Cancer)";
+            if(["MA","MI","MU","ME","MO","TA","TI","TU","TE"].includes(f2) || ["M"].includes(f1)) return "Simha (Leo)";
+            if(["TO","PA","PI","PU","SH","NA","TH","PE","PO"].includes(f2) || ["P"].includes(f1)) return "Kanya (Virgo)";
+            if(["RA","RI","RU","RE","RO","TA","TI","TU","TE"].includes(f2) || ["R","T"].includes(f1)) return "Tula (Libra)";
+            if(["TO","NA","NI","NU","NE","NO","YA","YI","YU"].includes(f2) || ["N","Y"].includes(f1)) return "Vrishchik (Scorpio)";
+            if(["YE","YO","BH","DH","PH"].includes(f2) || ["B","F"].includes(f1)) return "Dhanu (Sagittarius)";
+            if(["BH","JA","JI","KH","GA","GI"].includes(f2) || ["J","G"].includes(f1)) return "Makar (Capricorn)";
+            if(["GU","GE","GO","SA","SI","SU","SE","SO","DA"].includes(f2) || ["S"].includes(f1)) return "Kumbh (Aquarius)";
+            if(["DI","DU","TH","JH","YA","DE","DO","CH"].includes(f2) || ["Z"].includes(f1)) return "Meen (Pisces)";
+            return "Mesh (Aries)";
+        }
+
+        function generateKundali() {
+            let name = document.getElementById('astroName').value.trim();
+            let dob = document.getElementById('astroDOB').value;
+            let tob = document.getElementById('astroTOB').value;
+            let place = document.getElementById('astroPlace').value.trim();
+            
+            if(!name || !dob || !place || !tob) { 
+                alert("Kripya Pura Naam, Janam Din, Samay aur Sthan (Place) sabhi sahi se bharein!"); 
+                return; 
+            }
+
+            let dateObj = new Date(dob);
+            let days = ["Ravivar (Sunday)", "Somvar (Monday)", "Mangalvar (Tuesday)", "Budhvar (Wednesday)", "Guruvar (Thursday)", "Shukravar (Friday)", "Shanivar (Saturday)"];
+            let exactDay = days[dateObj.getDay()];
+
+            // Generate a unique seed
+            let rawSeed = name + dob + tob + place;
+            let seed = 0;
+            for(let i = 0; i < rawSeed.length; i++) { seed += rawSeed.charCodeAt(i); }
+
+            let rashiName = getKundaliRashi(name);
+            let rashiInfo = rashiDetails[rashiName];
+
+            let nakshatraArr = ["Ashwini (Ketu)", "Bharani (Shukra)", "Krittika (Surya)", "Rohini (Chandra)", "Mrigashirsha (Mangal)", "Ardra (Rahu)", "Punarvasu (Guru)", "Pushya (Shani)", "Ashlesha (Budh)", "Magha (Ketu)", "Purva Phalguni (Shukra)", "Uttara Phalguni (Surya)", "Hasta (Chandra)", "Chitra (Mangal)", "Swati (Rahu)", "Vishakha (Guru)", "Anuradha (Shani)", "Jyeshtha (Budh)", "Mula (Ketu)", "Purva Ashadha (Shukra)", "Uttara Ashadha (Surya)", "Shravana (Chandra)", "Dhanishta (Mangal)", "Shatabhisha (Rahu)", "Purva Bhadrapada (Guru)", "Uttara Bhadrapada (Shani)", "Revati (Budh)"];
+            let nakshatra = nakshatraArr[(seed * 7) % 27];
+            
+            let ganas = ["Deva (Devine, Shanti Purna)", "Manushya (Human, Samanya)", "Rakshasa (Demon, Aakramak)"];
+            let gana = ganas[seed % 3];
+            
+            let nadis = ["Aadi (First, Vata Pradhan)", "Madhya (Middle, Pitta Pradhan)", "Antya (Last, Kapha Pradhan)"];
+            let nadi = nadis[(seed * 3) % 3];
+            
+            let lagnaArr = ["Mesh", "Vrishabha", "Mithun", "Kark", "Simha", "Kanya", "Tula", "Vrishchik", "Dhanu", "Makar", "Kumbh", "Meen"];
+            let hour = parseInt(tob.split(':')[0]);
+            let lagna = lagnaArr[(hour + seed) % 12];
+
+            let marriageStr = marriagePredictions[seed % 4];
+            let careerStr = careerPredictions[(seed * 2) % 4];
+            let labhHaaniStr = labhHaaniPredictions[(seed * 3) % 4];
+            let interestStr = interestsPredictions[(seed * 5) % 4];
+            let gunStr = gunPredictions[(seed * 7) % 4];
+
+            let html = `
+                <div style="text-align:center; margin-bottom: 25px; border-bottom: 2px solid #ff9800; padding-bottom: 15px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Om_symbol.svg" width="40" style="margin-bottom:10px;">
+                    <h2 style="color: #d84315; margin: 0; font-family: 'Orbitron', sans-serif;">Purna Janam Kundali Darshan</h2>
+                    <p style="color: #444; font-size: 16px; margin-top: 5px;"><strong>${name.toUpperCase()}</strong></p>
+                    <p style="color: #666; font-size: 14px; margin:0;">${dob} | ${tob} | ${place.toUpperCase()}</p>
+                </div>
+                
+                <div class="astro-section-title"><i class="fa-solid fa-scroll"></i> Panchang Evam Jyotish Vivaran</div>
+                <p style="font-size: 13px; color: #555; margin-bottom:10px;">Nimnalikhit jankari aapke janam sthan aur samay par aadharit hai. Isme aapki grah disha dikhai gayi hai.</p>
+                
+                <table class="k-table">
+                    <tr><th>1. Janam Din / Vaar</th><td>${exactDay} ko aapka janam hua hai. Is din janme log kafi snehil hote hain.</td></tr>
+                    <tr><th>2. Rashi (Moon Sign)</th><td><strong>${rashiName}</strong> - Is rashi ka prabhav jeevan bhar rehta hai.</td></tr>
+                    <tr><th>3. Graha Nakshatra</th><td><strong>${nakshatra}</strong> - Is nakshatra me janme log bahut khushmizaz aur parakrami hote hain.</td></tr>
+                    <tr><th>4. Lagna (Ascendant)</th><td><strong>${lagna}</strong> - Yeh aapke baahri aakarshan aur chamak ko nirdharit karta hai.</td></tr>
+                    <tr><th>5. Gana & Nadi</th><td>Gana: ${gana} <br> Nadi: ${nadi}</td></tr>
+                    <tr><th>6. Ishta Devta</th><td>Aapke ishta dev <strong>${["Shiv Ji", "Vishnu Ji", "Hanuman Ji", "Durga Mata", "Ganesh Ji", "Surya Dev", "Krishna Ji"][(seed * 11) % 7]}</strong> hain. Inki puja se labh hoga.</td></tr>
+                </table>
+
+                <div class="astro-section-title"><i class="fa-solid fa-user-astronaut"></i> Vyaktitva Aur Gun (Character & Qualities)</div>
+                <p><strong>Charitra:</strong> ${rashiInfo.desc} Aap har mushkil ko haskar tal dete hain.<br><br>
+                <strong>${gunStr}</strong><br><br>
+                <strong>Character Interests:</strong> ${interestStr}</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-child-reaching"></i> Body Shape & Height</div>
+                <p><strong>Sharir Ki Banawat:</strong> ${rashiInfo.body} Aapka aakarshan sabko apni aur kheenjta hai. Aapke baal aur chehre ki chamak me lagnesh ka bahut gehra asar dikhta hai.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-heart"></i> Shadi Aur Dampatya Jeevan (Marriage)</div>
+                <p><strong>Vivahik Jeevan:</strong> ${marriageStr} Aap apne jeevan sathi ke prati hamesha imandar rahenge. Aapki shadi me parivar ka poora sahyog prapt hoga.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-briefcase"></i> Carrier Aur Bhavishya (Career & Work)</div>
+                <p><strong>Bhavishya:</strong> ${careerStr} Aajkal ka samay thoda sangharsh purna ho sakta hai lekin aage chalkar sab kuch aapke paksha me hoga. Mehnat se sab prapt karenge.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-scale-unbalanced"></i> Jeevan Labh Haani (Profit & Loss)</div>
+                <p><strong>Arthik Sthiti:</strong> ${labhHaaniStr} Nivesh (Investment) karte samay visheshagya ki salah zaroor le. Bachat karne ki aadat dalein.</p>
+
+                <div class="astro-section-title"><i class="fa-solid fa-gem"></i> Bhagya Darshan (Favorites & Lucky Elements)</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
+                    <div style="background: #e3f2fd; padding: 15px; text-align: center; border-radius: 10px; border: 1px solid #90caf9;">
+                        <i class="fa-solid fa-palette" style="font-size:24px; color:#1e88e5; margin-bottom:5px;"></i><br>
+                        <span style="font-size:12px; color:#555;">Shubh / Favorite Rang</span><br><b style="font-size:16px;">${rashiInfo.luckyColor}</b>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 15px; text-align: center; border-radius: 10px; border: 1px solid #a5d6a7;">
+                        <i class="fa-solid fa-dice" style="font-size:24px; color:#43a047; margin-bottom:5px;"></i><br>
+                        <span style="font-size:12px; color:#555;">Shubh Ank (Lucky No.)</span><br><b style="font-size:16px;">${(seed % 9) + 1} & ${(seed % 8) + 2}</b>
+                    </div>
+                    <div style="background: #fff3e0; padding: 15px; text-align: center; border-radius: 10px; border: 1px solid #ffcc80; grid-column: span 2;">
+                        <i class="fa-regular fa-gem" style="font-size:24px; color:#fb8c00; margin-bottom:5px;"></i><br>
+                        <span style="font-size:12px; color:#555;">Shubh Ratna (Lucky Gemstone)</span><br><b style="font-size:16px;">${rashiInfo.luckyStone}</b>
+                    </div>
+                </div>
+            `;
+            
+            let resBox = document.getElementById('astroResult');
+            resBox.style.display = "block";
+            resBox.innerHTML = html;
+            
+            // Scroll down to result gracefully
+            setTimeout(() => {
+                resBox.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
